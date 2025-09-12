@@ -103,3 +103,4 @@ export const formatMarketplaceName = (id: string): string => {
   
   return nameMap[id] || id;
 };
+

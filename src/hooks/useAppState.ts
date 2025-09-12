@@ -67,7 +67,7 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
         isCalculating: false
       };
       
-    case 'SAVE_SCENARIO':
+    case 'SAVE_SCENARIO': {
       const newScenario: Scenario = {
         ...action.payload,
         id: `scenario_${Date.now()}`,
@@ -79,8 +79,9 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
         scenarios: [...state.scenarios, newScenario],
         currentScenario: newScenario.id
       };
+    }
       
-    case 'LOAD_SCENARIO':
+    case 'LOAD_SCENARIO': {
       const scenario = state.scenarios.find(s => s.id === action.payload);
       if (scenario) {
         return {
@@ -91,6 +92,7 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
         };
       }
       return state;
+    }
       
     case 'DELETE_SCENARIO':
       return {

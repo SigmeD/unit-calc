@@ -3,7 +3,7 @@ import type { CalculationInput, Marketplace, ValidationRule, ValidationSchema } 
 /**
  * Валидация базовых правил для поля
  */
-export const validateField = (value: any, rules: ValidationRule[]): string | null => {
+export const validateField = (value: string | number | undefined | null, rules: ValidationRule[]): string | null => {
   for (const rule of rules) {
     // Проверка обязательности
     if (rule.required && (value === undefined || value === null || value === '')) {
@@ -42,7 +42,7 @@ export const validateField = (value: any, rules: ValidationRule[]): string | nul
 /**
  * Схема валидации для основных полей калькулятора
  */
-export const getValidationSchema = (marketplace?: Marketplace): ValidationSchema => {
+export const getValidationSchema = (): ValidationSchema => {
   return {
     // Блок 1: Себестоимость
     purchasePrice: [
@@ -246,11 +246,10 @@ export const validateCalculationInput = (
  */
 export const validateSingleField = (
   fieldName: keyof CalculationInput,
-  value: any,
-  allInput: CalculationInput,
-  marketplace?: Marketplace
+  value: string | number,
+  allInput: CalculationInput
 ): string | null => {
-  const schema = getValidationSchema(marketplace);
+  const schema = getValidationSchema();
   const rules = schema[fieldName];
 
   if (!rules) return null;

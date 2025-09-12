@@ -91,7 +91,7 @@ function App() {
     }
   };
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field: string, value: number | string) => {
     updateInput({ [field]: value });
   };
 
@@ -101,7 +101,7 @@ function App() {
     onResults: setResults,
     onErrors: setErrors,
     onCalculating: setCalculating,
-    debounceMs: 500
+    debounceMs: 200 // Уменьшили время для более отзывчивого интерфейса
   });
 
   // Получаем выбранный маркетплейс

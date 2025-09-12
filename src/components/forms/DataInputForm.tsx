@@ -5,7 +5,7 @@ import type { CalculationInput, MarketplaceId } from '../../types';
 interface DataInputFormProps {
   marketplace: MarketplaceId;
   values: CalculationInput;
-  onChange: (field: string, value: any) => void;
+  onChange: (field: string, value: number | string) => void;
   errors: Record<string, string>;
 }
 

@@ -70,7 +70,7 @@ export interface CalculationInput {
   additionalPromo: number; // Дополнительные промо в %
   
   // Специфичные поля маркетплейсов
-  specificData?: Record<string, any>;
+  specificData?: Record<string, string | number>;
 }
 
 // Детализация расходов
@@ -167,7 +167,7 @@ export interface ValidationRule {
   min?: number;
   max?: number;
   pattern?: RegExp;
-  custom?: (value: any) => boolean;
+  custom?: (value: string | number) => boolean;
   message: string;
 }
 
@@ -215,3 +215,4 @@ export interface InputFieldProps {
   step?: number;
   disabled?: boolean;
 }
+

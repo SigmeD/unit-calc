@@ -128,3 +128,4 @@ describe('MarketplaceSelector', () => {
     expect(screen.getByText('Маркетплейс не выбран')).toBeInTheDocument();
   });
 });
+

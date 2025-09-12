@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { Marketplace } from '../../types';
+import type { Marketplace, FieldConfig } from '../../types';
 import Card from '../ui/Card';
 import Input from '../ui/Input';
 import Select from '../ui/Select';
@@ -33,7 +33,7 @@ const MarketplaceSpecificFields: React.FC<MarketplaceSpecificFieldsProps> = ({
     }));
   };
 
-  const renderSpecificField = (field: any) => {
+  const renderSpecificField = (field: FieldConfig) => {
     const value = inputData[field.id as keyof typeof inputData] || 0;
     const error = errors[field.id];
 

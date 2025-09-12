@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, useState, useRef, useEffect } from 'react';
 import type { InputFieldProps } from '../../types';
 
 interface InputProps extends Omit<InputFieldProps, 'onChange'> {
@@ -26,25 +26,42 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
   name,
   ...props
 }, ref) => {
+  // Локальное состояние для отображения значения во время редактирования
+  const [displayValue, setDisplayValue] = useState(value.toString());
+  const [isFocused, setIsFocused] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Обновляем локальное значение только когда компонент не в фокусе
+  useEffect(() => {
+    if (!isFocused) {
+      setDisplayValue(value.toString());
+    }
+  }, [value, isFocused]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
+    setDisplayValue(rawValue);
+    
+    // Валидируем и отправляем изменения
+    const numValue = parseFloat(rawValue) || 0;
     
     if (type === 'percentage') {
       // Для процентов ограничиваем от 0 до 100
-      const numValue = Math.max(0, Math.min(100, parseFloat(rawValue) || 0));
-      onChange(numValue);
+      const clampedValue = Math.max(0, Math.min(100, numValue));
+      onChange(clampedValue);
     } else {
-      const numValue = parseFloat(rawValue) || 0;
       onChange(numValue);
     }
   };
 
-  const formatValue = (val: number | string): string => {
-    if (typeof val === 'string') return val;
-    if (type === 'percentage' && val > 0) {
-      return val.toString();
-    }
-    return val.toString();
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+    // При потере фокуса синхронизируем отображаемое значение с реальным
+    setDisplayValue(value.toString());
   };
 
   const inputId = id || `input-${label.toLowerCase().replace(/\s+/g, '-')}`;
@@ -63,15 +80,21 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
           <div className="group relative">
             <button
               type="button"
-              className="text-gray-400 hover:text-gray-600"
+              className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100"
               aria-label="Информация"
+              tabIndex={-1}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </button>
-            <div className="absolute right-0 bottom-full mb-2 w-64 p-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity z-10">
-              {tooltip}
+            {/* Tooltip - только при hover на иконку */}
+            <div className="absolute right-0 bottom-full mb-2 w-72 p-3 bg-gray-900 text-white text-sm rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50 pointer-events-none">
+              <div className="relative">
+                {tooltip}
+                {/* Стрелочка tooltip */}
+                <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+              </div>
             </div>
           </div>
         )}
@@ -79,12 +102,14 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
       
       <div className="relative">
         <input
-          ref={ref}
+          ref={ref || inputRef}
           id={inputId}
           name={name}
           type="number"
-          value={formatValue(value)}
+          value={displayValue}
           onChange={handleChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           placeholder={placeholder}
           min={min}
           max={max}

@@ -9,7 +9,7 @@ interface SimpleMarketplace {
   defaultValues: {
     commission: number;
     pickupRate: number;
-    [key: string]: any;
+    [key: string]: string | number;
   };
 }
 

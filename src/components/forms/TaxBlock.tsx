@@ -1,10 +1,10 @@
 import React from 'react';
-import { Input, Card, Select } from '../ui';
+import { Card, Select } from '../ui';
 import type { CalculationInput, TaxRegime } from '../../types';
 
 interface TaxBlockProps {
   values: Pick<CalculationInput, 'taxRegime'>;
-  onChange: (field: string, value: any) => void;
+  onChange: (field: string, value: TaxRegime) => void;
   errors: Record<string, string>;
   grossProfit?: number; // Валовая прибыль для расчета налога
 }

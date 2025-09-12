@@ -23,8 +23,8 @@ interface UseMarketplaceReturn {
   
   // Утилиты
   isMarketplaceSelected: boolean;
-  getSpecificFieldValue: (fieldId: string, specificData?: Record<string, any>) => any;
-  updateSpecificField: (fieldId: string, value: any, specificData: Record<string, any>) => Record<string, any>;
+  getSpecificFieldValue: (fieldId: string, specificData?: Record<string, string | number>) => string | number | undefined;
+  updateSpecificField: (fieldId: string, value: string | number, specificData: Record<string, string | number>) => Record<string, string | number>;
 }
 
 export const useMarketplace = (
@@ -76,17 +76,17 @@ export const useMarketplace = (
   // Получение значения специфичного поля
   const getSpecificFieldValue = useCallback((
     fieldId: string, 
-    specificData?: Record<string, any>
-  ): any => {
+    specificData?: Record<string, string | number>
+  ): string | number | undefined => {
     return specificData?.[fieldId] || '';
   }, []);
 
   // Обновление специфичного поля
   const updateSpecificField = useCallback((
     fieldId: string, 
-    value: any, 
-    specificData: Record<string, any>
-  ): Record<string, any> => {
+    value: string | number, 
+    specificData: Record<string, string | number>
+  ): Record<string, string | number> => {
     return {
       ...specificData,
       [fieldId]: value
