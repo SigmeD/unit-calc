@@ -1,4 +1,4 @@
-import { forwardRef, useState, useRef, useEffect, useCallback, memo } from 'react';
+import { forwardRef, useState, useRef, useEffect } from 'react';
 import type { InputFieldProps } from '../../types';
 
 interface InputProps extends Omit<InputFieldProps, 'onChange'> {
@@ -8,7 +8,7 @@ interface InputProps extends Omit<InputFieldProps, 'onChange'> {
   name?: string;
 }
 
-const InputComponent = forwardRef<HTMLInputElement, InputProps>(({
+const Input = forwardRef<HTMLInputElement, InputProps>(({
   label,
   value,
   onChange,
@@ -26,74 +26,57 @@ const InputComponent = forwardRef<HTMLInputElement, InputProps>(({
   name,
   ...props
 }, ref) => {
-  // Локальное состояние для отображения значения во время редактирования
-  const [displayValue, setDisplayValue] = useState(value.toString());
-  const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  // Обновляем локальное значение только когда компонент не в фокусе И значение действительно изменилось
+  const [localValue, setLocalValue] = useState(value.toString());
+  
+  // Синхронизируем только когда value изменяется извне и поле не в фокусе
   useEffect(() => {
-    if (!isFocused && value.toString() !== displayValue) {
-      setDisplayValue(value.toString());
+    const input = inputRef.current;
+    if (input && document.activeElement !== input) {
+      setLocalValue(value.toString());
     }
-  }, [value, isFocused, displayValue]);
+  }, [value]);
 
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const rawValue = e.target.value;
-    setDisplayValue(rawValue);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setLocalValue(newValue);
     
-    // Валидируем и отправляем изменения только если значение валидно
-    if (rawValue === '' || rawValue === '-' || rawValue === '.') {
-      // Не отправляем изменения для неполных значений
-      return;
-    }
-    
-    const numValue = parseFloat(rawValue);
-    if (!isNaN(numValue)) {
-      if (type === 'percentage') {
-        // Для процентов ограничиваем от 0 до 100
-        const clampedValue = Math.max(0, Math.min(100, numValue));
-        onChange(clampedValue);
-      } else {
-        onChange(numValue);
+    // Парсим число только если строка не пустая и не является промежуточным вводом
+    if (newValue && newValue !== '-' && newValue !== '.') {
+      const numValue = parseFloat(newValue);
+      if (!isNaN(numValue)) {
+        if (type === 'percentage') {
+          onChange(Math.max(0, Math.min(100, numValue)));
+        } else {
+          onChange(numValue);
+        }
       }
     }
-  }, [type, onChange]);
+  };
 
-  const handleFocus = useCallback(() => {
-    setIsFocused(true);
-  }, []);
-
-  const handleBlur = useCallback(() => {
-    setIsFocused(false);
-    
-    // При потере фокуса обрабатываем финальное значение
-    if (displayValue === '' || displayValue === '-' || displayValue === '.') {
-      // Если поле пустое или содержит только символы, устанавливаем 0
+  const handleBlur = () => {
+    // При потере фокуса устанавливаем корректное значение
+    if (!localValue || localValue === '-' || localValue === '.') {
+      setLocalValue('0');
       onChange(0);
-      setDisplayValue('0');
     } else {
-      const numValue = parseFloat(displayValue);
+      const numValue = parseFloat(localValue);
       if (!isNaN(numValue)) {
         if (type === 'percentage') {
           const clampedValue = Math.max(0, Math.min(100, numValue));
+          setLocalValue(clampedValue.toString());
           onChange(clampedValue);
-          setDisplayValue(clampedValue.toString());
         } else {
+          setLocalValue(numValue.toString());
           onChange(numValue);
-          setDisplayValue(numValue.toString());
         }
       } else {
-        // Если значение некорректно, возвращаем к текущему значению
-        setDisplayValue(value.toString());
+        setLocalValue(value.toString());
       }
     }
-  }, [displayValue, value, type, onChange]);
+  };
 
-  const inputId = useCallback(() => 
-    id || `input-${label.toLowerCase().replace(/\s+/g, '-')}`, 
-    [id, label]
-  )();
+  const inputId = id || `input-${label.toLowerCase().replace(/\s+/g, '-')}`;
 
   return (
     <div className={`space-y-1 ${className}`}>
@@ -135,9 +118,8 @@ const InputComponent = forwardRef<HTMLInputElement, InputProps>(({
           id={inputId}
           name={name}
           type="number"
-          value={displayValue}
+          value={localValue}
           onChange={handleChange}
-          onFocus={handleFocus}
           onBlur={handleBlur}
           placeholder={placeholder}
           min={min}
@@ -176,9 +158,6 @@ const InputComponent = forwardRef<HTMLInputElement, InputProps>(({
   );
 });
 
-InputComponent.displayName = 'Input';
-
-// Мемоизация компонента для предотвращения лишних ре-рендеров
-const Input = memo(InputComponent);
+Input.displayName = 'Input';
 
 export default Input;

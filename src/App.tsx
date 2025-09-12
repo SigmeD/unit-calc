@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useAppState, useCalculations } from './hooks';
 import { MarketplaceSelector, DataInputForm } from './components/forms';
 import { ResultsPanel } from './components/results';
@@ -81,7 +82,7 @@ function App() {
     setCalculating
   } = useAppState();
   
-  const handleMarketplaceChange = (marketplaceId: MarketplaceId) => {
+  const handleMarketplaceChange = useCallback((marketplaceId: MarketplaceId) => {
     setMarketplace(marketplaceId);
     
     // Применяем дефолтные значения для выбранного маркетплейса
@@ -89,11 +90,11 @@ function App() {
     if (marketplace) {
       updateInput(marketplace.defaultValues);
     }
-  };
+  }, [setMarketplace, updateInput]);
 
-  const handleInputChange = (field: string, value: number | string) => {
+  const handleInputChange = useCallback((field: string, value: number | string) => {
     updateInput({ [field]: value });
-  };
+  }, [updateInput]);
 
   // Настройка автоматических расчетов
   useCalculations({
