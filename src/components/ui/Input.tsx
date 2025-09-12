@@ -1,14 +1,24 @@
-import { forwardRef, useState, useRef, useEffect } from 'react';
-import type { InputFieldProps } from '../../types';
+import React from 'react';
 
-interface InputProps extends Omit<InputFieldProps, 'onChange'> {
+interface InputProps {
+  label: string;
+  value: number;
   onChange: (value: number) => void;
+  type?: 'number' | 'currency' | 'percentage';
+  placeholder?: string;
+  tooltip?: string;
+  error?: string;
+  required?: boolean;
+  min?: number;
+  max?: number;
+  step?: number;
+  disabled?: boolean;
   className?: string;
   id?: string;
   name?: string;
 }
 
-const Input = forwardRef<HTMLInputElement, InputProps>(({
+const Input: React.FC<InputProps> = ({
   label,
   value,
   onChange,
@@ -23,27 +33,17 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
   disabled = false,
   className = '',
   id,
-  name,
-  ...props
-}, ref) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [localValue, setLocalValue] = useState(value.toString());
-  
-  // Синхронизируем только когда value изменяется извне и поле не в фокусе
-  useEffect(() => {
-    const input = inputRef.current;
-    if (input && document.activeElement !== input) {
-      setLocalValue(value.toString());
-    }
-  }, [value]);
+  name
+}) => {
+  // ПОЛНОСТЬЮ НЕКОНТРОЛИРУЕМЫЙ КОМПОНЕНТ - никакого локального state
+  const inputId = id || `input-${label.toLowerCase().replace(/\s+/g, '-')}`;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    setLocalValue(newValue);
+    const rawValue = e.target.value;
     
-    // Парсим число только если строка не пустая и не является промежуточным вводом
-    if (newValue && newValue !== '-' && newValue !== '.') {
-      const numValue = parseFloat(newValue);
+    // Парсим только валидные числа
+    if (rawValue && rawValue !== '-' && rawValue !== '.') {
+      const numValue = parseFloat(rawValue);
       if (!isNaN(numValue)) {
         if (type === 'percentage') {
           onChange(Math.max(0, Math.min(100, numValue)));
@@ -54,29 +54,21 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
     }
   };
 
-  const handleBlur = () => {
-    // При потере фокуса устанавливаем корректное значение
-    if (!localValue || localValue === '-' || localValue === '.') {
-      setLocalValue('0');
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value;
+    
+    if (!rawValue || rawValue === '-' || rawValue === '.') {
       onChange(0);
     } else {
-      const numValue = parseFloat(localValue);
+      const numValue = parseFloat(rawValue);
       if (!isNaN(numValue)) {
-        if (type === 'percentage') {
-          const clampedValue = Math.max(0, Math.min(100, numValue));
-          setLocalValue(clampedValue.toString());
-          onChange(clampedValue);
-        } else {
-          setLocalValue(numValue.toString());
-          onChange(numValue);
-        }
-      } else {
-        setLocalValue(value.toString());
+        const finalValue = type === 'percentage' 
+          ? Math.max(0, Math.min(100, numValue))
+          : numValue;
+        onChange(finalValue);
       }
     }
   };
-
-  const inputId = id || `input-${label.toLowerCase().replace(/\s+/g, '-')}`;
 
   return (
     <div className={`space-y-1 ${className}`}>
@@ -114,11 +106,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
       
       <div className="relative">
         <input
-          ref={ref || inputRef}
           id={inputId}
           name={name}
           type="number"
-          value={localValue}
+          defaultValue={value}
           onChange={handleChange}
           onBlur={handleBlur}
           placeholder={placeholder}
@@ -156,8 +147,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
       )}
     </div>
   );
-});
-
-Input.displayName = 'Input';
+};
 
 export default Input;
+

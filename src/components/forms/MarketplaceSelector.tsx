@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import type { MarketplaceId } from '../../types';
 import Card from '../ui/Card';
 import Select from '../ui/Select';
@@ -69,4 +69,4 @@ const MarketplaceSelector: React.FC<MarketplaceSelectorProps> = ({
   );
 };
 
-export default MarketplaceSelector;
+export default memo(MarketplaceSelector);

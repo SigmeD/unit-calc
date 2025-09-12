@@ -55,9 +55,8 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
         input: {
           ...state.input,
           ...action.payload
-        },
-        // Сбрасываем результаты при изменении входных данных
-        results: null
+        }
+        // Не сбрасываем results - пусть показываются старые до получения новых
       };
       
     case 'SET_RESULTS':
@@ -193,7 +192,13 @@ export const useAppState = () => {
   
   return {
     // Состояние
-    ...state,
+    selectedMarketplace: state.selectedMarketplace,
+    currentScenario: state.currentScenario,
+    scenarios: state.scenarios,
+    input: state.input,
+    results: state.results,
+    isCalculating: state.isCalculating,
+    errors: state.errors,
     
     // Действия
     setMarketplace,

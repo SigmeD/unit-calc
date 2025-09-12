@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { COGSBlock, MarketplaceCostsBlock, AdditionalCostsBlock, TaxBlock, PricingBlock } from './';
 import type { CalculationInput, MarketplaceId } from '../../types';
 
@@ -82,11 +82,11 @@ const DataInputForm: React.FC<DataInputFormProps> = ({
           </div>
         </button>
         
-        {isExpanded && (
-          <div className="border-2 border-t-0 border-gray-200 rounded-b-lg bg-white">
-            {children}
-          </div>
-        )}
+        <div className={`border-2 border-t-0 border-gray-200 rounded-b-lg bg-white transition-all duration-300 overflow-hidden ${
+          isExpanded ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
+        }`}>
+          {children}
+        </div>
       </div>
     );
   };
@@ -213,4 +213,4 @@ const DataInputForm: React.FC<DataInputFormProps> = ({
   );
 };
 
-export default DataInputForm;
+export default memo(DataInputForm);

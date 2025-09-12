@@ -102,7 +102,7 @@ function App() {
     onResults: setResults,
     onErrors: setErrors,
     onCalculating: setCalculating,
-    debounceMs: 200 // Уменьшили время для более отзывчивого интерфейса
+    debounceMs: 800 // Увеличили время чтобы избежать потери фокуса при вводе
   });
 
   // Получаем выбранный маркетплейс
