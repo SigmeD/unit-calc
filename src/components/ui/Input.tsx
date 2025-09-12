@@ -8,7 +8,7 @@ interface InputProps extends Omit<InputFieldProps, 'onChange'> {
   name?: string;
 }
 
-function SafeNumberInput({ value, onChange, id, placeholder, className }) {
+function SafeNumberInput({ value, onChange, id, placeholder, className }: any) {
   // хранить как строку – безопасно при вводе
   const [inner, setInner] = useState(value == null ? '' : String(value));
 
@@ -48,13 +48,9 @@ const Input: React.FC<InputProps> = ({
   tooltip,
   error,
   required = false,
-  min,
-  max,
-  step = 1,
   disabled = false,
   className = '',
-  id,
-  name
+  id
 }) => {
   const inputId = id || `input-${label.toLowerCase().replace(/\s+/g, '-')}`;
 

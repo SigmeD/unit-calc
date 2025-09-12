@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
-import { Button, Input, Card } from '../ui';
+import { Button, Input, Card, ExportButton } from '../ui';
 import { useScenarios } from '../../hooks/useScenarios';
+import { useExport } from '../../hooks/useExport';
 import type { Scenario, MarketplaceId, CalculationInput, CalculationResults } from '../../types';
 
 interface ScenarioManagerProps {
@@ -134,6 +135,7 @@ const ScenarioManager: React.FC<ScenarioManagerProps> = ({
     generateUniqueName,
     maxScenarios 
   } = useScenarios();
+  const { exportMultipleScenarios } = useExport();
 
   const currentScenario = scenarios.find(s => s.id === currentScenarioId);
   const hasUnsavedChanges = currentScenario && 
@@ -186,6 +188,19 @@ const ScenarioManager: React.FC<ScenarioManagerProps> = ({
     };
     onScenarioSave(copiedScenario);
   }, [generateUniqueName, onScenarioSave]);
+
+  const handleExportAll = useCallback(() => {
+    const scenariosWithResults = scenarios.filter(s => s.results);
+    if (scenariosWithResults.length === 0) {
+      alert('Нет сценариев с результатами для экспорта');
+      return;
+    }
+    
+    const result = exportMultipleScenarios(scenariosWithResults, marketplace);
+    if (!result.success) {
+      alert(`Ошибка экспорта: ${result.error}`);
+    }
+  }, [scenarios, marketplace, exportMultipleScenarios]);
 
   const formatDate = useCallback((date: Date) => {
     return new Intl.DateTimeFormat('ru-RU', {
@@ -248,6 +263,20 @@ const ScenarioManager: React.FC<ScenarioManagerProps> = ({
             </svg>
             Новый
           </Button>
+          
+          {scenarios.filter(s => s.results).length > 1 && (
+            <Button
+              variant="secondary"
+              onClick={handleExportAll}
+              size="sm"
+              title="Экспортировать все сценарии с результатами в один файл"
+            >
+              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Экспорт всех
+            </Button>
+          )}
           
           <Button
             onClick={handleSaveClick}
@@ -347,6 +376,17 @@ const ScenarioManager: React.FC<ScenarioManagerProps> = ({
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
                       </svg>
                     </Button>
+                  )}
+                  
+                  {scenario.results && (
+                    <ExportButton
+                      scenario={scenario}
+                      marketplace={marketplace}
+                      size="sm"
+                      variant="outline"
+                      showDropdown={false}
+                      className="!p-1 !min-w-8 border-0 text-gray-600 hover:text-gray-700 hover:bg-gray-100"
+                    />
                   )}
                   
                   <Button
