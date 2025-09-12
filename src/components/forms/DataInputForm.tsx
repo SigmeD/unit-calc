@@ -9,6 +9,59 @@ interface DataInputFormProps {
   errors: Record<string, string>;
 }
 
+// ✅ ВЫНЕСЕН НАРУЖУ: BlockWrapper определен ВНЕ DataInputForm
+const BlockWrapper: React.FC<{
+  blockId: string;
+  title: string;
+  children: React.ReactNode;
+  priority?: 'high' | 'medium' | 'low';
+  isExpanded: boolean;
+  onToggle: (blockId: string) => void;
+}> = ({ blockId, title, children, priority = 'medium', isExpanded, onToggle }) => {
+  const priorityColors = {
+    high: 'border-red-200 bg-red-50',
+    medium: 'border-blue-200 bg-blue-50',
+    low: 'border-gray-200 bg-gray-50'
+  };
+
+  const priorityIcons = {
+    high: '🔴',
+    medium: '🔵', 
+    low: '⚪'
+  };
+
+  return (
+    <div className="mb-6">
+      <button
+        type="button"
+        onClick={() => onToggle(blockId)}
+        className={`w-full text-left p-4 rounded-t-lg border-2 ${priorityColors[priority]} hover:bg-opacity-80 transition-colors`}
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <span className="text-lg">{priorityIcons[priority]}</span>
+            <span className="font-medium text-gray-900">{title}</span>
+          </div>
+          <svg 
+            className={`w-5 h-5 text-gray-500 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </button>
+      
+      <div className={`border-2 border-t-0 border-gray-200 rounded-b-lg bg-white transition-all duration-300 overflow-hidden ${
+        isExpanded ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
+      }`}>
+        {children}
+      </div>
+    </div>
+  );
+};
+
 const DataInputForm: React.FC<DataInputFormProps> = ({
   marketplace,
   values,
@@ -39,58 +92,6 @@ const DataInputForm: React.FC<DataInputFormProps> = ({
     return finalPrice - totalCOGS - commission - values.logistics - values.storage - values.advertising;
   };
 
-  const BlockWrapper: React.FC<{
-    blockId: string;
-    title: string;
-    children: React.ReactNode;
-    priority?: 'high' | 'medium' | 'low';
-  }> = ({ blockId, title, children, priority = 'medium' }) => {
-    const isExpanded = expandedBlocks.has(blockId);
-    
-    const priorityColors = {
-      high: 'border-red-200 bg-red-50',
-      medium: 'border-blue-200 bg-blue-50',
-      low: 'border-gray-200 bg-gray-50'
-    };
-
-    const priorityIcons = {
-      high: '🔴',
-      medium: '🔵', 
-      low: '⚪'
-    };
-
-    return (
-      <div className="mb-6">
-        <button
-          type="button"
-          onClick={() => toggleBlock(blockId)}
-          className={`w-full text-left p-4 rounded-t-lg border-2 ${priorityColors[priority]} hover:bg-opacity-80 transition-colors`}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <span className="text-lg">{priorityIcons[priority]}</span>
-              <span className="font-medium text-gray-900">{title}</span>
-            </div>
-            <svg 
-              className={`w-5 h-5 text-gray-500 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </div>
-        </button>
-        
-        <div className={`border-2 border-t-0 border-gray-200 rounded-b-lg bg-white transition-all duration-300 overflow-hidden ${
-          isExpanded ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
-        }`}>
-          {children}
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="space-y-6">
       {/* Заголовок формы */}
@@ -115,7 +116,13 @@ const DataInputForm: React.FC<DataInputFormProps> = ({
       </div>
 
       {/* Блок 1: Себестоимость */}
-      <BlockWrapper blockId="cogs" title="Блок 1: Себестоимость (COGS)" priority="high">
+      <BlockWrapper 
+        blockId="cogs" 
+        title="Блок 1: Себестоимость (COGS)" 
+        priority="high"
+        isExpanded={expandedBlocks.has('cogs')}
+        onToggle={toggleBlock}
+      >
         <COGSBlock
           values={{
             purchasePrice: values.purchasePrice,
@@ -129,7 +136,13 @@ const DataInputForm: React.FC<DataInputFormProps> = ({
       </BlockWrapper>
 
       {/* Блок 2: Расходы маркетплейса */}
-      <BlockWrapper blockId="marketplace" title="Блок 2: Расходы маркетплейса" priority="high">
+      <BlockWrapper 
+        blockId="marketplace" 
+        title="Блок 2: Расходы маркетплейса" 
+        priority="high"
+        isExpanded={expandedBlocks.has('marketplace')}
+        onToggle={toggleBlock}
+      >
         <MarketplaceCostsBlock
           values={{
             commission: values.commission,
@@ -146,7 +159,13 @@ const DataInputForm: React.FC<DataInputFormProps> = ({
       </BlockWrapper>
 
       {/* Блок 3: Дополнительные расходы */}
-      <BlockWrapper blockId="additional" title="Блок 3: Дополнительные расходы" priority="medium">
+      <BlockWrapper 
+        blockId="additional" 
+        title="Блок 3: Дополнительные расходы" 
+        priority="medium"
+        isExpanded={expandedBlocks.has('additional')}
+        onToggle={toggleBlock}
+      >
         <AdditionalCostsBlock
           values={{
             advertising: values.advertising,
@@ -160,7 +179,13 @@ const DataInputForm: React.FC<DataInputFormProps> = ({
       </BlockWrapper>
 
       {/* Блок 4: Налоги */}
-      <BlockWrapper blockId="tax" title="Блок 4: Налогообложение" priority="medium">
+      <BlockWrapper 
+        blockId="tax" 
+        title="Блок 4: Налогообложение" 
+        priority="medium"
+        isExpanded={expandedBlocks.has('tax')}
+        onToggle={toggleBlock}
+      >
         <TaxBlock
           values={{
             taxRegime: values.taxRegime
@@ -172,7 +197,13 @@ const DataInputForm: React.FC<DataInputFormProps> = ({
       </BlockWrapper>
 
       {/* Блок 5: Ценообразование */}
-      <BlockWrapper blockId="pricing" title="Блок 5: Ценообразование и скидки" priority="high">
+      <BlockWrapper 
+        blockId="pricing" 
+        title="Блок 5: Ценообразование и скидки" 
+        priority="high"
+        isExpanded={expandedBlocks.has('pricing')}
+        onToggle={toggleBlock}
+      >
         <PricingBlock
           values={{
             retailPrice: values.retailPrice,
