@@ -31,26 +31,32 @@ const InputComponent = forwardRef<HTMLInputElement, InputProps>(({
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Обновляем локальное значение только когда компонент не в фокусе
+  // Обновляем локальное значение только когда компонент не в фокусе И значение действительно изменилось
   useEffect(() => {
-    if (!isFocused) {
+    if (!isFocused && value.toString() !== displayValue) {
       setDisplayValue(value.toString());
     }
-  }, [value, isFocused]);
+  }, [value, isFocused, displayValue]);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
     setDisplayValue(rawValue);
     
-    // Валидируем и отправляем изменения
-    const numValue = parseFloat(rawValue) || 0;
+    // Валидируем и отправляем изменения только если значение валидно
+    if (rawValue === '' || rawValue === '-' || rawValue === '.') {
+      // Не отправляем изменения для неполных значений
+      return;
+    }
     
-    if (type === 'percentage') {
-      // Для процентов ограничиваем от 0 до 100
-      const clampedValue = Math.max(0, Math.min(100, numValue));
-      onChange(clampedValue);
-    } else {
-      onChange(numValue);
+    const numValue = parseFloat(rawValue);
+    if (!isNaN(numValue)) {
+      if (type === 'percentage') {
+        // Для процентов ограничиваем от 0 до 100
+        const clampedValue = Math.max(0, Math.min(100, numValue));
+        onChange(clampedValue);
+      } else {
+        onChange(numValue);
+      }
     }
   }, [type, onChange]);
 
@@ -60,9 +66,29 @@ const InputComponent = forwardRef<HTMLInputElement, InputProps>(({
 
   const handleBlur = useCallback(() => {
     setIsFocused(false);
-    // При потере фокуса синхронизируем отображаемое значение с реальным
-    setDisplayValue(value.toString());
-  }, [value]);
+    
+    // При потере фокуса обрабатываем финальное значение
+    if (displayValue === '' || displayValue === '-' || displayValue === '.') {
+      // Если поле пустое или содержит только символы, устанавливаем 0
+      onChange(0);
+      setDisplayValue('0');
+    } else {
+      const numValue = parseFloat(displayValue);
+      if (!isNaN(numValue)) {
+        if (type === 'percentage') {
+          const clampedValue = Math.max(0, Math.min(100, numValue));
+          onChange(clampedValue);
+          setDisplayValue(clampedValue.toString());
+        } else {
+          onChange(numValue);
+          setDisplayValue(numValue.toString());
+        }
+      } else {
+        // Если значение некорректно, возвращаем к текущему значению
+        setDisplayValue(value.toString());
+      }
+    }
+  }, [displayValue, value, type, onChange]);
 
   const inputId = useCallback(() => 
     id || `input-${label.toLowerCase().replace(/\s+/g, '-')}`, 
