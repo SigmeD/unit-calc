@@ -113,7 +113,7 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
 
   return (
     <Card title="Результаты расчета">
-      <div className="space-y-6">
+      <div className="space-y-6 animate-fade-in">
         {/* Статус прибыльности */}
         {analysis && (
           <div className={`p-4 rounded-lg border bg-${statusColor}-50 border-${statusColor}-200`}>

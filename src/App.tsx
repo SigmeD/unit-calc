@@ -137,7 +137,7 @@ function App() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Форма ввода данных */}
           {selectedMarketplace && (
-            <div>
+            <div className="order-2 lg:order-1">
               <DataInputForm
                 marketplace={selectedMarketplace}
                 values={input}
@@ -147,17 +147,19 @@ function App() {
             </div>
           )}
 
-          {/* Результаты расчетов */}
+          {/* Результаты расчетов - липкий блок */}
           {selectedMarketplace && (
-            <div>
-              <ResultsPanel
-                marketplace={currentMarketplace || null}
-                results={results}
-                isCalculating={isCalculating}
-                onExport={() => console.log('Экспорт в Excel')}
-                onSave={() => console.log('Сохранить сценарий')}
-                onReset={() => console.log('Сбросить данные')}
-              />
+            <div className="order-1 lg:order-2">
+              <div className="lg:sticky lg:top-8 lg:max-h-[calc(100vh-4rem)] lg:overflow-y-auto sticky-results sticky-scroll lg:shadow-lg lg:rounded-xl">
+                <ResultsPanel
+                  marketplace={currentMarketplace || null}
+                  results={results}
+                  isCalculating={isCalculating}
+                  onExport={() => console.log('Экспорт в Excel')}
+                  onSave={() => console.log('Сохранить сценарий')}
+                  onReset={() => console.log('Сбросить данные')}
+                />
+              </div>
             </div>
           )}
         </div>
