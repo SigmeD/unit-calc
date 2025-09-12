@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, useCallback, memo } from 'react';
 
 interface SelectOption {
   value: string | number;
@@ -21,7 +21,7 @@ interface SelectProps {
   name?: string;
 }
 
-const Select = forwardRef<HTMLSelectElement, SelectProps>(({
+const SelectComponent = forwardRef<HTMLSelectElement, SelectProps>(({
   label,
   value,
   onChange,
@@ -36,14 +36,17 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(({
   name,
   ...props
 }, ref) => {
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = e.target.value;
     // Пытаемся преобразовать в число, если это возможно
     const numValue = Number(selectedValue);
     onChange(isNaN(numValue) ? selectedValue : numValue);
-  };
+  }, [onChange]);
 
-  const selectId = id || `select-${label.toLowerCase().replace(/\s+/g, '-')}`;
+  const selectId = useCallback(() => 
+    id || `select-${label.toLowerCase().replace(/\s+/g, '-')}`,
+    [id, label]
+  )();
 
   return (
     <div className={`space-y-1 ${className}`}>
@@ -66,8 +69,12 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </button>
-            <div className="absolute right-0 bottom-full mb-2 w-64 p-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity z-10">
-              {tooltip}
+            <div className="absolute right-0 bottom-full mb-2 w-72 p-3 bg-gray-900 text-white text-sm rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50 pointer-events-none">
+              <div className="relative">
+                {tooltip}
+                {/* Стрелочка tooltip */}
+                <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+              </div>
             </div>
           </div>
         )}
@@ -110,6 +117,9 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(({
   );
 });
 
-Select.displayName = 'Select';
+SelectComponent.displayName = 'Select';
+
+// Мемоизация компонента для предотвращения лишних ре-рендеров
+const Select = memo(SelectComponent);
 
 export default Select;

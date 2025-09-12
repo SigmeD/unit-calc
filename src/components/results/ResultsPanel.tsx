@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useMemo } from 'react';
 import type { Marketplace, CalculationResults } from '../../types';
 import { useFormulaExplanations, useProfitabilityAnalysis } from '../../hooks';
 import Card from '../ui/Card';
@@ -13,7 +13,7 @@ interface ResultsPanelProps {
   onReset?: () => void;
 }
 
-const ResultsPanel: React.FC<ResultsPanelProps> = ({ 
+const ResultsPanelComponent: React.FC<ResultsPanelProps> = ({ 
   marketplace, 
   results, 
   isCalculating, 
@@ -24,23 +24,23 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
   const { getExplanation } = useFormulaExplanations();
   const analysis = useProfitabilityAnalysis(results);
 
-  // Форматирование чисел
-  const formatCurrency = (value: number) => {
+  // Мемоизированные функции форматирования
+  const formatCurrency = useMemo(() => (value: number) => {
     return new Intl.NumberFormat('ru-RU', {
       style: 'currency',
       currency: 'RUB',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }).format(value);
-  };
+  }, []);
 
-  const formatPercent = (value: number) => {
+  const formatPercent = useMemo(() => (value: number) => {
     return new Intl.NumberFormat('ru-RU', {
       style: 'percent',
       minimumFractionDigits: 1,
       maximumFractionDigits: 1
     }).format(value / 100);
-  };
+  }, []);
 
   // Определение цвета статуса
   const getStatusColor = (status: 'profit' | 'loss' | 'breakeven') => {
@@ -256,5 +256,8 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
     </Card>
   );
 };
+
+// Мемоизация компонента для предотвращения лишних ре-рендеров
+const ResultsPanel = memo(ResultsPanelComponent);
 
 export default ResultsPanel;

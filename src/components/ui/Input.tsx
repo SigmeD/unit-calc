@@ -1,4 +1,4 @@
-import { forwardRef, useState, useRef, useEffect } from 'react';
+import { forwardRef, useState, useRef, useEffect, useCallback, memo } from 'react';
 import type { InputFieldProps } from '../../types';
 
 interface InputProps extends Omit<InputFieldProps, 'onChange'> {
@@ -8,7 +8,7 @@ interface InputProps extends Omit<InputFieldProps, 'onChange'> {
   name?: string;
 }
 
-const Input = forwardRef<HTMLInputElement, InputProps>(({
+const InputComponent = forwardRef<HTMLInputElement, InputProps>(({
   label,
   value,
   onChange,
@@ -38,7 +38,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
     }
   }, [value, isFocused]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
     setDisplayValue(rawValue);
     
@@ -52,19 +52,22 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
     } else {
       onChange(numValue);
     }
-  };
+  }, [type, onChange]);
 
-  const handleFocus = () => {
+  const handleFocus = useCallback(() => {
     setIsFocused(true);
-  };
+  }, []);
 
-  const handleBlur = () => {
+  const handleBlur = useCallback(() => {
     setIsFocused(false);
     // При потере фокуса синхронизируем отображаемое значение с реальным
     setDisplayValue(value.toString());
-  };
+  }, [value]);
 
-  const inputId = id || `input-${label.toLowerCase().replace(/\s+/g, '-')}`;
+  const inputId = useCallback(() => 
+    id || `input-${label.toLowerCase().replace(/\s+/g, '-')}`, 
+    [id, label]
+  )();
 
   return (
     <div className={`space-y-1 ${className}`}>
@@ -147,6 +150,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
   );
 });
 
-Input.displayName = 'Input';
+InputComponent.displayName = 'Input';
+
+// Мемоизация компонента для предотвращения лишних ре-рендеров
+const Input = memo(InputComponent);
 
 export default Input;

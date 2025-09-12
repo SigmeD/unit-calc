@@ -1,4 +1,4 @@
-import { useCallback, useReducer } from 'react';
+import { useCallback, useReducer, useMemo } from 'react';
 import type { 
   AppState, 
   AppAction, 
@@ -167,19 +167,29 @@ export const useAppState = () => {
     dispatch({ type: 'CLEAR_ERRORS' });
   }, []);
   
-  // Утилиты
-  const getCurrentScenario = useCallback((): Scenario | null => {
+  // Мемоизированные утилиты для лучшей производительности
+  const getCurrentScenario = useMemo((): Scenario | null => {
     if (!state.currentScenario) return null;
     return state.scenarios.find(s => s.id === state.currentScenario) || null;
   }, [state.currentScenario, state.scenarios]);
   
-  const hasUnsavedChanges = useCallback((): boolean => {
-    const currentScenario = getCurrentScenario();
+  const hasUnsavedChanges = useMemo((): boolean => {
+    const currentScenario = getCurrentScenario;
     if (!currentScenario) return true;
     
-    // Простая проверка на изменения (можно улучшить)
-    return JSON.stringify(currentScenario.input) !== JSON.stringify(state.input);
-  }, [getCurrentScenario, state.input]);
+    // Глубокое сравнение ключевых полей (более эффективно чем JSON.stringify)
+    return !isInputEqual(currentScenario.input, state.input);
+  }, [getCurrentScenario, state.input, isInputEqual]);
+
+  // Вспомогательная функция для сравнения input объектов
+  const isInputEqual = useCallback((input1: CalculationInput, input2: CalculationInput): boolean => {
+    const keys: (keyof CalculationInput)[] = [
+      'purchasePrice', 'retailPrice', 'deliveryToWarehouse', 'packaging', 
+      'commission', 'logistics', 'advertising', 'fixedCostsPerMonth'
+    ];
+    
+    return keys.every(key => input1[key] === input2[key]);
+  }, []);
   
   return {
     // Состояние

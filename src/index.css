@@ -2,6 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+/* CSS переменные для лучшего управления цветами и анимациями */
+:root {
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --success-color: #10b981;
+  --danger-color: #ef4444;
+  --warning-color: #f59e0b;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-900: #111827;
+  
+  /* Анимации */
+  --transition-fast: 0.15s ease-in-out;
+  --transition-normal: 0.3s ease-in-out;
+  --transition-slow: 0.5s ease-in-out;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --border-radius: 0.5rem;
+}
+
 /* Базовые стили для проекта */
 @layer base {
   * {
@@ -79,15 +106,16 @@
     animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
   
-  /* Плавная анимация для липкого блока */
+  /* Плавная анимация для липкого блока с CSS переменными */
   .sticky-results {
-    transition: all 0.3s ease-in-out;
+    transition: all var(--transition-normal);
+    will-change: transform;
   }
   
   /* Улучшение скролла для липкого контента */
   .sticky-scroll {
     scrollbar-width: thin;
-    scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+    scrollbar-color: var(--gray-400) transparent;
   }
   
   .sticky-scroll::-webkit-scrollbar {
@@ -99,12 +127,31 @@
   }
   
   .sticky-scroll::-webkit-scrollbar-thumb {
-    background-color: rgba(156, 163, 175, 0.5);
+    background-color: var(--gray-400);
     border-radius: 3px;
+    transition: background-color var(--transition-fast);
   }
   
   .sticky-scroll::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(156, 163, 175, 0.8);
+    background-color: var(--gray-500);
+  }
+  
+  /* Оптимизированные анимации с лучшей производительностью */
+  .animate-fade-in-fast {
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .animate-slide-in {
+    animation: slideIn 0.4s ease-out;
+  }
+  
+  .hover-lift {
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
   }
 }
 
@@ -144,5 +191,16 @@
   100% {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
