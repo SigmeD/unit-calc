@@ -8,6 +8,7 @@ export { default as AdditionalCostsBlock } from './AdditionalCostsBlock';
 export { default as TaxBlock } from './TaxBlock';
 export { default as PricingBlock } from './PricingBlock';
 export { default as DataInputForm } from './DataInputForm';
+export { default as ScenarioManager } from './ScenarioManager';
 
 export * from './MarketplaceSelector';
 export * from './MarketplaceSpecificFields';
@@ -19,3 +20,4 @@ export * from './AdditionalCostsBlock';
 export * from './TaxBlock';
 export * from './PricingBlock';
 export * from './DataInputForm';
+export * from './ScenarioManager';

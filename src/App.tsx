@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useAppState, useCalculations } from './hooks';
-import { MarketplaceSelector, DataInputForm } from './components/forms';
+import { MarketplaceSelector, DataInputForm, ScenarioManager } from './components/forms';
 import { ResultsPanel } from './components/results';
 import type { MarketplaceId, TaxRegime } from './types';
 
@@ -71,6 +71,8 @@ const mockMarketplaces = [
 function App() {
   const {
     selectedMarketplace,
+    currentScenario,
+    scenarios,
     input,
     results,
     errors,
@@ -79,7 +81,11 @@ function App() {
     updateInput,
     setResults,
     setErrors,
-    setCalculating
+    setCalculating,
+    saveScenario,
+    loadScenario,
+    deleteScenario,
+    newScenario
   } = useAppState();
   
   const handleMarketplaceChange = useCallback((marketplaceId: MarketplaceId) => {
@@ -135,6 +141,21 @@ function App() {
           errors={errors}
         />
 
+        {/* Управление сценариями */}
+        {selectedMarketplace && (
+          <ScenarioManager
+            scenarios={scenarios}
+            currentScenarioId={currentScenario}
+            marketplace={selectedMarketplace}
+            currentInput={input}
+            currentResults={results}
+            onScenarioLoad={loadScenario}
+            onScenarioSave={saveScenario}
+            onScenarioDelete={deleteScenario}
+            onNewScenario={newScenario}
+          />
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Форма ввода данных */}
           {selectedMarketplace && (
@@ -172,7 +193,7 @@ function App() {
               <p className="text-gray-600">Текущий прогресс проекта</p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
               <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 hover:shadow-md transition-shadow">
                 <div className="flex items-center space-x-3 mb-4">
                   <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
@@ -267,6 +288,26 @@ function App() {
                 </h3>
                 <p className="text-green-700 text-sm mb-3">
                   Панель результатов, метрики, визуализация
+                </p>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  Завершен
+                </span>
+              </div>
+
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 hover:shadow-md transition-shadow">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
+                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                </div>
+                <h3 className="font-semibold text-green-900 mb-2">
+                  Этап 6: Управление сценариями
+                </h3>
+                <p className="text-green-700 text-sm mb-3">
+                  Сохранение, загрузка и управление сценариями
                 </p>
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                   Завершен

@@ -157,6 +157,9 @@ export type AppAction =
   | { type: 'SAVE_SCENARIO'; payload: Omit<Scenario, 'id' | 'createdAt' | 'updatedAt'> }
   | { type: 'LOAD_SCENARIO'; payload: string }
   | { type: 'DELETE_SCENARIO'; payload: string }
+  | { type: 'LOAD_SCENARIOS'; payload: Scenario[] }
+  | { type: 'UPDATE_SCENARIO'; payload: Scenario }
+  | { type: 'NEW_SCENARIO' }
   | { type: 'SET_CALCULATING'; payload: boolean }
   | { type: 'SET_ERRORS'; payload: Record<string, string> }
   | { type: 'CLEAR_ERRORS' };

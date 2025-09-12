@@ -1,4 +1,5 @@
-import { useCallback, useReducer, useMemo } from 'react';
+import { useCallback, useReducer, useMemo, useEffect } from 'react';
+import { useScenarios } from './useScenarios';
 import type { 
   AppState, 
   AppAction, 
@@ -99,6 +100,50 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
         scenarios: state.scenarios.filter(s => s.id !== action.payload),
         currentScenario: state.currentScenario === action.payload ? null : state.currentScenario
       };
+
+    case 'LOAD_SCENARIOS':
+      return {
+        ...state,
+        scenarios: action.payload
+      };
+
+    case 'UPDATE_SCENARIO': {
+      return {
+        ...state,
+        scenarios: state.scenarios.map(s => 
+          s.id === action.payload.id ? action.payload : s
+        )
+      };
+    }
+
+    case 'NEW_SCENARIO':
+      return {
+        ...state,
+        currentScenario: null,
+        input: {
+          purchasePrice: 0,
+          deliveryToWarehouse: 0,
+          packaging: 0,
+          otherCOGS: 0,
+          commission: state.selectedMarketplace === 'wildberries' ? 17 : 15,
+          logistics: state.selectedMarketplace === 'wildberries' ? 0 : 35,
+          storage: 0,
+          returnProcessing: 0,
+          pickupRate: state.selectedMarketplace === 'wildberries' ? 70 : 65,
+          returnRate: state.selectedMarketplace === 'wildberries' ? 15 : 20,
+          advertising: 0,
+          otherVariableCosts: 0,
+          fixedCostsPerMonth: 0,
+          expectedSalesPerMonth: 100,
+          taxRegime: 'USN_6',
+          retailPrice: 1000,
+          sellerDiscount: 0,
+          additionalPromo: 0,
+          specificData: {}
+        },
+        results: null,
+        errors: {}
+      };
       
     case 'SET_CALCULATING':
       return {
@@ -128,6 +173,19 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
  */
 export const useAppState = () => {
   const [state, dispatch] = useReducer(appReducer, initialState);
+  const {
+    loadScenariosFromStorage,
+    saveScenario: saveScenarioToStorage,
+    deleteScenario: deleteScenarioFromStorage
+  } = useScenarios();
+
+  // Загружаем сценарии из LocalStorage при инициализации
+  useEffect(() => {
+    const savedScenarios = loadScenariosFromStorage();
+    if (savedScenarios.length > 0) {
+      dispatch({ type: 'LOAD_SCENARIOS', payload: savedScenarios });
+    }
+  }, [loadScenariosFromStorage]);
   
   // Действия
   const setMarketplace = useCallback((marketplaceId: MarketplaceId) => {
@@ -142,16 +200,32 @@ export const useAppState = () => {
     dispatch({ type: 'SET_RESULTS', payload: results });
   }, []);
   
-  const saveScenario = useCallback((scenario: Omit<Scenario, 'id' | 'createdAt' | 'updatedAt'>) => {
-    dispatch({ type: 'SAVE_SCENARIO', payload: scenario });
-  }, []);
+  const saveScenario = useCallback((scenario: Scenario) => {
+    // Сохраняем в LocalStorage
+    saveScenarioToStorage(scenario);
+    
+    // Обновляем состояние
+    if (state.scenarios.find(s => s.id === scenario.id)) {
+      dispatch({ type: 'UPDATE_SCENARIO', payload: scenario });
+    } else {
+      dispatch({ type: 'SAVE_SCENARIO', payload: scenario });
+    }
+  }, [saveScenarioToStorage, state.scenarios]);
   
   const loadScenario = useCallback((scenarioId: string) => {
     dispatch({ type: 'LOAD_SCENARIO', payload: scenarioId });
   }, []);
   
   const deleteScenario = useCallback((scenarioId: string) => {
+    // Удаляем из LocalStorage
+    deleteScenarioFromStorage(scenarioId);
+    
+    // Обновляем состояние
     dispatch({ type: 'DELETE_SCENARIO', payload: scenarioId });
+  }, [deleteScenarioFromStorage]);
+
+  const newScenario = useCallback(() => {
+    dispatch({ type: 'NEW_SCENARIO' });
   }, []);
   
   const setCalculating = useCallback((isCalculating: boolean) => {
@@ -207,6 +281,7 @@ export const useAppState = () => {
     saveScenario,
     loadScenario,
     deleteScenario,
+    newScenario,
     setCalculating,
     setErrors,
     clearErrors,
