@@ -1,5 +1,6 @@
-import { useAppState } from './hooks';
+import { useAppState, useCalculations } from './hooks';
 import { MarketplaceSelector, DataInputForm } from './components/forms';
+import { ResultsPanel } from './components/results';
 import type { MarketplaceId, TaxRegime } from './types';
 
 // Моковые данные маркетплейсов для демонстрации
@@ -72,8 +73,12 @@ function App() {
     input,
     results,
     errors,
+    isCalculating,
     setMarketplace,
-    updateInput
+    updateInput,
+    setResults,
+    setErrors,
+    setCalculating
   } = useAppState();
   
   const handleMarketplaceChange = (marketplaceId: MarketplaceId) => {
@@ -89,6 +94,18 @@ function App() {
   const handleInputChange = (field: string, value: any) => {
     updateInput({ [field]: value });
   };
+
+  // Настройка автоматических расчетов
+  useCalculations({
+    input,
+    onResults: setResults,
+    onErrors: setErrors,
+    onCalculating: setCalculating,
+    debounceMs: 500
+  });
+
+  // Получаем выбранный маркетплейс
+  const currentMarketplace = mockMarketplaces.find(mp => mp.id === selectedMarketplace);
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 py-8">
@@ -117,25 +134,33 @@ function App() {
           errors={errors}
         />
 
-        {/* Форма ввода данных */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Форма ввода данных */}
           {selectedMarketplace && (
-          <DataInputForm
-            marketplace={selectedMarketplace}
-            values={input}
-            onChange={handleInputChange}
-            errors={errors}
-          />
-        )}
-
-        {/* Результаты расчетов будут добавлены в этапе 4 */}
-        {selectedMarketplace && results && (
-          <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Результаты расчета</h2>
-              <p className="text-gray-600">Будет реализовано в Этапе 4: Движок расчетов</p>
-            </div>
+            <div>
+              <DataInputForm
+                marketplace={selectedMarketplace}
+                values={input}
+                onChange={handleInputChange}
+                errors={errors}
+              />
             </div>
           )}
+
+          {/* Результаты расчетов */}
+          {selectedMarketplace && (
+            <div>
+              <ResultsPanel
+                marketplace={currentMarketplace || null}
+                results={results}
+                isCalculating={isCalculating}
+                onExport={() => console.log('Экспорт в Excel')}
+                onSave={() => console.log('Сохранить сценарий')}
+                onReset={() => console.log('Сбросить данные')}
+              />
+            </div>
+          )}
+        </div>
 
           {/* Статус разработки */}
           <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8">
@@ -205,23 +230,23 @@ function App() {
                 </span>
               </div>
 
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 hover:shadow-md transition-shadow">
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 hover:shadow-md transition-shadow">
                 <div className="flex items-center space-x-3 mb-4">
-                  <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
+                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
                   </div>
-                  <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                 </div>
-                <h3 className="font-semibold text-blue-900 mb-2">
+                <h3 className="font-semibold text-green-900 mb-2">
                   Этап 4: Движок расчетов
                 </h3>
-                <p className="text-blue-700 text-sm mb-3">
-                  Формулы юнит-экономики, точка безубыточности
+                <p className="text-green-700 text-sm mb-3">
+                  Формулы юнит-экономики, мгновенные расчеты
                 </p>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                  Следующий этап
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  Завершен
                 </span>
               </div>
             </div>
