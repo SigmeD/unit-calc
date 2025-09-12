@@ -1,0 +1,203 @@
+import { useCallback, useReducer } from 'react';
+import type { 
+  AppState, 
+  AppAction, 
+  MarketplaceId, 
+  CalculationInput, 
+  CalculationResults,
+  Scenario 
+} from '../types';
+
+// Начальное состояние приложения
+const initialState: AppState = {
+  selectedMarketplace: 'wildberries' as MarketplaceId,
+  currentScenario: null,
+  scenarios: [],
+  input: {
+    purchasePrice: 0,
+    deliveryToWarehouse: 0,
+    packaging: 0,
+    otherCOGS: 0,
+    commission: 15,
+    logistics: 0,
+    storage: 0,
+    returnProcessing: 0,
+    pickupRate: 70,
+    returnRate: 15,
+    advertising: 0,
+    otherVariableCosts: 0,
+    fixedCostsPerMonth: 0,
+    expectedSalesPerMonth: 100,
+    taxRegime: 'USN_6',
+    retailPrice: 1000,
+    sellerDiscount: 0,
+    additionalPromo: 0,
+    specificData: {}
+  },
+  results: null,
+  isCalculating: false,
+  errors: {}
+};
+
+// Редьюсер для управления состоянием
+const appReducer = (state: AppState, action: AppAction): AppState => {
+  switch (action.type) {
+    case 'SET_MARKETPLACE':
+      return {
+        ...state,
+        selectedMarketplace: action.payload,
+        errors: {} // Сбрасываем ошибки при смене маркетплейса
+      };
+      
+    case 'UPDATE_INPUT':
+      return {
+        ...state,
+        input: {
+          ...state.input,
+          ...action.payload
+        },
+        // Сбрасываем результаты при изменении входных данных
+        results: null
+      };
+      
+    case 'SET_RESULTS':
+      return {
+        ...state,
+        results: action.payload,
+        isCalculating: false
+      };
+      
+    case 'SAVE_SCENARIO':
+      const newScenario: Scenario = {
+        ...action.payload,
+        id: `scenario_${Date.now()}`,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      return {
+        ...state,
+        scenarios: [...state.scenarios, newScenario],
+        currentScenario: newScenario.id
+      };
+      
+    case 'LOAD_SCENARIO':
+      const scenario = state.scenarios.find(s => s.id === action.payload);
+      if (scenario) {
+        return {
+          ...state,
+          currentScenario: action.payload,
+          input: scenario.input,
+          results: scenario.results || null
+        };
+      }
+      return state;
+      
+    case 'DELETE_SCENARIO':
+      return {
+        ...state,
+        scenarios: state.scenarios.filter(s => s.id !== action.payload),
+        currentScenario: state.currentScenario === action.payload ? null : state.currentScenario
+      };
+      
+    case 'SET_CALCULATING':
+      return {
+        ...state,
+        isCalculating: action.payload
+      };
+      
+    case 'SET_ERRORS':
+      return {
+        ...state,
+        errors: action.payload
+      };
+      
+    case 'CLEAR_ERRORS':
+      return {
+        ...state,
+        errors: {}
+      };
+      
+    default:
+      return state;
+  }
+};
+
+/**
+ * Хук для управления глобальным состоянием приложения
+ */
+export const useAppState = () => {
+  const [state, dispatch] = useReducer(appReducer, initialState);
+  
+  // Действия
+  const setMarketplace = useCallback((marketplaceId: MarketplaceId) => {
+    dispatch({ type: 'SET_MARKETPLACE', payload: marketplaceId });
+  }, []);
+  
+  const updateInput = useCallback((input: Partial<CalculationInput>) => {
+    dispatch({ type: 'UPDATE_INPUT', payload: input });
+  }, []);
+  
+  const setResults = useCallback((results: CalculationResults) => {
+    dispatch({ type: 'SET_RESULTS', payload: results });
+  }, []);
+  
+  const saveScenario = useCallback((scenario: Omit<Scenario, 'id' | 'createdAt' | 'updatedAt'>) => {
+    dispatch({ type: 'SAVE_SCENARIO', payload: scenario });
+  }, []);
+  
+  const loadScenario = useCallback((scenarioId: string) => {
+    dispatch({ type: 'LOAD_SCENARIO', payload: scenarioId });
+  }, []);
+  
+  const deleteScenario = useCallback((scenarioId: string) => {
+    dispatch({ type: 'DELETE_SCENARIO', payload: scenarioId });
+  }, []);
+  
+  const setCalculating = useCallback((isCalculating: boolean) => {
+    dispatch({ type: 'SET_CALCULATING', payload: isCalculating });
+  }, []);
+  
+  const setErrors = useCallback((errors: Record<string, string>) => {
+    dispatch({ type: 'SET_ERRORS', payload: errors });
+  }, []);
+  
+  const clearErrors = useCallback(() => {
+    dispatch({ type: 'CLEAR_ERRORS' });
+  }, []);
+  
+  // Утилиты
+  const getCurrentScenario = useCallback((): Scenario | null => {
+    if (!state.currentScenario) return null;
+    return state.scenarios.find(s => s.id === state.currentScenario) || null;
+  }, [state.currentScenario, state.scenarios]);
+  
+  const hasUnsavedChanges = useCallback((): boolean => {
+    const currentScenario = getCurrentScenario();
+    if (!currentScenario) return true;
+    
+    // Простая проверка на изменения (можно улучшить)
+    return JSON.stringify(currentScenario.input) !== JSON.stringify(state.input);
+  }, [getCurrentScenario, state.input]);
+  
+  return {
+    // Состояние
+    ...state,
+    
+    // Действия
+    setMarketplace,
+    updateInput,
+    setResults,
+    saveScenario,
+    loadScenario,
+    deleteScenario,
+    setCalculating,
+    setErrors,
+    clearErrors,
+    
+    // Утилиты
+    getCurrentScenario,
+    hasUnsavedChanges
+  };
+};
+
+export default useAppState;

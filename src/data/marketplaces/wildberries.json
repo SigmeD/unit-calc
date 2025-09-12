@@ -1,0 +1,42 @@
+{
+  "id": "wildberries",
+  "name": "Wildberries",
+  "defaultValues": {
+    "commission": 17,
+    "logistics": 0,
+    "storage": 0,
+    "pickupRate": 70,
+    "returnRate": 15,
+    "advertising": 50
+  },
+  "specificFields": [
+    {
+      "id": "spp",
+      "name": "СПП (бонусы)",
+      "type": "percentage",
+      "tooltip": "Система персональных предложений - дополнительная скидка за счет маркетплейса"
+    },
+    {
+      "id": "brandDiscount",
+      "name": "Скидка бренда",
+      "type": "percentage", 
+      "tooltip": "Дополнительная скидка от бренда"
+    }
+  ],
+  "commissionRanges": {
+    "fashion": { "min": 15, "max": 20 },
+    "electronics": { "min": 12, "max": 18 },
+    "beauty": { "min": 15, "max": 25 },
+    "home": { "min": 10, "max": 15 },
+    "kids": { "min": 15, "max": 20 },
+    "books": { "min": 8, "max": 12 }
+  },
+  "logisticOptions": [
+    {
+      "id": "standard",
+      "name": "Стандартная доставка",
+      "cost": 0,
+      "description": "Бесплатная доставка WB"
+    }
+  ]
+}

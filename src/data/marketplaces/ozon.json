@@ -1,0 +1,52 @@
+{
+  "id": "ozon",
+  "name": "Ozon",
+  "defaultValues": {
+    "commission": 15,
+    "logistics": 35,
+    "storage": 0,
+    "pickupRate": 65,
+    "returnRate": 20,
+    "advertising": 60
+  },
+  "specificFields": [
+    {
+      "id": "lastMile",
+      "name": "Последняя миля",
+      "type": "currency",
+      "tooltip": "Стоимость доставки до клиента"
+    },
+    {
+      "id": "fulfillment",
+      "name": "Размещение FBO/FBS",
+      "type": "select",
+      "tooltip": "Тип размещения товара",
+      "options": [
+        { "value": "fbo", "label": "FBO (со склада Ozon)" },
+        { "value": "fbs", "label": "FBS (со своего склада)" }
+      ]
+    }
+  ],
+  "commissionRanges": {
+    "fashion": { "min": 12, "max": 18 },
+    "electronics": { "min": 8, "max": 15 },
+    "beauty": { "min": 15, "max": 22 },
+    "home": { "min": 8, "max": 12 },
+    "kids": { "min": 12, "max": 18 },
+    "books": { "min": 5, "max": 10 }
+  },
+  "logisticOptions": [
+    {
+      "id": "standard",
+      "name": "Стандартная доставка",
+      "cost": 35,
+      "description": "Доставка силами Ozon"
+    },
+    {
+      "id": "express",
+      "name": "Экспресс доставка",
+      "cost": 50,
+      "description": "Ускоренная доставка"
+    }
+  ]
+}

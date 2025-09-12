@@ -1,0 +1,17 @@
+REM Git setup commands for unit-calc project
+
+git init
+
+git add .
+
+git commit -m "Initial commit: MVP Stages 1-3 completed - React + TypeScript + Tailwind CSS calculator for marketplace unit economics"
+
+REM After creating GitHub repository at https://github.com/new:
+REM Repository name: unit-calc
+REM Description: Calculator for marketplace unit economics (Wildberries and Ozon). React + TypeScript + Tailwind CSS
+
+git remote add origin https://github.com/SigmeD/unit-calc.git
+
+git branch -M main
+
+git push -u origin main
