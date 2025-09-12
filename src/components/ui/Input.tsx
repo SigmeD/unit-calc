@@ -1,21 +1,42 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import type { InputFieldProps } from '../../types';
 
-interface InputProps {
-  label: string;
-  value: number;
+interface InputProps extends Omit<InputFieldProps, 'onChange'> {
   onChange: (value: number) => void;
-  type?: 'number' | 'currency' | 'percentage';
-  placeholder?: string;
-  tooltip?: string;
-  error?: string;
-  required?: boolean;
-  min?: number;
-  max?: number;
-  step?: number;
-  disabled?: boolean;
   className?: string;
   id?: string;
   name?: string;
+}
+
+function SafeNumberInput({ value, onChange, id, placeholder, className }) {
+  // хранить как строку – безопасно при вводе
+  const [inner, setInner] = useState(value == null ? '' : String(value));
+
+  // если value извне изменился (набор сценариев: загрузка, ресет), синхронизируем
+  useEffect(() => {
+    setInner(value == null ? '' : String(value));
+  }, [value]);
+
+  return (
+    <input
+      id={id}
+      inputMode="numeric"
+      value={inner}
+      placeholder={placeholder}
+      className={className}
+      onChange={(e) => {
+        // Разрешаем только цифры и запятую/точку; не парсим в число пока пользователь печатает
+        const v = e.target.value;
+        if (/^[\d\s.,-]*$/.test(v)) setInner(v);
+      }}
+      onBlur={() => {
+        // На blur — чистим и передаём число наружу
+        const normalized = inner.replace(/\s+/g, '').replace(',', '.');
+        const num = Number(normalized);
+        onChange(isNaN(num) ? 0 : num);
+      }}
+    />
+  );
 }
 
 const Input: React.FC<InputProps> = ({
@@ -35,40 +56,7 @@ const Input: React.FC<InputProps> = ({
   id,
   name
 }) => {
-  // ПОЛНОСТЬЮ НЕКОНТРОЛИРУЕМЫЙ КОМПОНЕНТ - никакого локального state
   const inputId = id || `input-${label.toLowerCase().replace(/\s+/g, '-')}`;
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const rawValue = e.target.value;
-    
-    // Парсим только валидные числа
-    if (rawValue && rawValue !== '-' && rawValue !== '.') {
-      const numValue = parseFloat(rawValue);
-      if (!isNaN(numValue)) {
-        if (type === 'percentage') {
-          onChange(Math.max(0, Math.min(100, numValue)));
-        } else {
-          onChange(numValue);
-        }
-      }
-    }
-  };
-
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    const rawValue = e.target.value;
-    
-    if (!rawValue || rawValue === '-' || rawValue === '.') {
-      onChange(0);
-    } else {
-      const numValue = parseFloat(rawValue);
-      if (!isNaN(numValue)) {
-        const finalValue = type === 'percentage' 
-          ? Math.max(0, Math.min(100, numValue))
-          : numValue;
-        onChange(finalValue);
-      }
-    }
-  };
 
   return (
     <div className={`space-y-1 ${className}`}>
@@ -105,18 +93,11 @@ const Input: React.FC<InputProps> = ({
       </div>
       
       <div className="relative">
-        <input
+        <SafeNumberInput
           id={inputId}
-          name={name}
-          type="number"
-          defaultValue={value}
-          onChange={handleChange}
-          onBlur={handleBlur}
+          value={value}
+          onChange={onChange}
           placeholder={placeholder}
-          min={min}
-          max={max}
-          step={step}
-          disabled={disabled}
           className={`
             input-field
             ${error ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''}
@@ -124,7 +105,6 @@ const Input: React.FC<InputProps> = ({
             ${type === 'percentage' ? 'pr-8' : ''}
             ${type === 'currency' ? 'pr-8' : ''}
           `}
-          {...props}
         />
         
         {/* Суффикс для процентов */}
@@ -150,4 +130,3 @@ const Input: React.FC<InputProps> = ({
 };
 
 export default Input;
-
