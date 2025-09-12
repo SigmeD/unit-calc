@@ -166,6 +166,16 @@ export const useAppState = () => {
   const clearErrors = useCallback(() => {
     dispatch({ type: 'CLEAR_ERRORS' });
   }, []);
+
+  // Вспомогательная функция для сравнения input объектов
+  const isInputEqual = useCallback((input1: CalculationInput, input2: CalculationInput): boolean => {
+    const keys: (keyof CalculationInput)[] = [
+      'purchasePrice', 'retailPrice', 'deliveryToWarehouse', 'packaging', 
+      'commission', 'logistics', 'advertising', 'fixedCostsPerMonth'
+    ];
+    
+    return keys.every(key => input1[key] === input2[key]);
+  }, []);
   
   // Мемоизированные утилиты для лучшей производительности
   const getCurrentScenario = useMemo((): Scenario | null => {
@@ -180,16 +190,6 @@ export const useAppState = () => {
     // Глубокое сравнение ключевых полей (более эффективно чем JSON.stringify)
     return !isInputEqual(currentScenario.input, state.input);
   }, [getCurrentScenario, state.input, isInputEqual]);
-
-  // Вспомогательная функция для сравнения input объектов
-  const isInputEqual = useCallback((input1: CalculationInput, input2: CalculationInput): boolean => {
-    const keys: (keyof CalculationInput)[] = [
-      'purchasePrice', 'retailPrice', 'deliveryToWarehouse', 'packaging', 
-      'commission', 'logistics', 'advertising', 'fixedCostsPerMonth'
-    ];
-    
-    return keys.every(key => input1[key] === input2[key]);
-  }, []);
   
   return {
     // Состояние
