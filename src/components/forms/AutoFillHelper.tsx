@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Card, Select } from '../ui';
+import { Button, Card } from '../ui';
 import { useAutoFill } from '../../hooks';
 import type { CalculationInput, MarketplaceId } from '../../types';
 
@@ -88,17 +88,17 @@ const AutoFillHelper: React.FC<AutoFillHelperProps> = ({
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Выберите категорию товара
             </label>
-            <Select
+            <select
               value={selectedCategory}
-              onChange={(value) => setSelectedCategory(value as 'low_price' | 'mid_price' | 'high_price')}
-              className="w-full"
+              onChange={(e) => setSelectedCategory(e.target.value as 'low_price' | 'mid_price' | 'high_price')}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               {categories.map((category) => (
                 <option key={category.key} value={category.key}>
                   {category.name} ({category.priceRange}) - {category.description}
                 </option>
               ))}
-            </Select>
+            </select>
           </div>
 
           {/* Предварительный просмотр значений */}

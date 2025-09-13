@@ -43,10 +43,7 @@ const SelectComponent = forwardRef<HTMLSelectElement, SelectProps>(({
     onChange(isNaN(numValue) ? selectedValue : numValue);
   }, [onChange]);
 
-  const selectId = useCallback(() => 
-    id || `select-${label.toLowerCase().replace(/\s+/g, '-')}`,
-    [id, label]
-  )();
+  const selectId = id || `select-${label.toLowerCase().replace(/\s+/g, '-')}`;
 
   return (
     <div className={`space-y-1 ${className}`}>
