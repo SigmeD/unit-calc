@@ -3,7 +3,7 @@
  * Реализует мгновенный пересчет при изменении данных
  */
 
-import { useEffect, useCallback, useMemo } from 'react';
+import { useEffect, useCallback, useMemo, useRef } from 'react';
 import { calculateMetrics, validateCalculationInput, hasCalculationErrors } from '../calculations';
 import type { CalculationInput, CalculationResults } from '../types';
 
@@ -25,6 +25,7 @@ export const useCalculations = ({
   onCalculating,
   debounceMs = 300
 }: UseCalculationsOptions) => {
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Мемоизируем валидацию входных данных
   const validationErrors = useMemo(() => {
@@ -40,10 +41,18 @@ export const useCalculations = ({
     return !hasCalculationErrors(input) && Object.keys(validationErrors).length === 0;
   }, [input, validationErrors]);
 
-  // Функция выполнения расчетов
-  const performCalculation = useCallback(async () => {
-    if (!canCalculate) {
-      onErrors(validationErrors);
+  // Функция выполнения расчетов - стабильная
+  const performCalculation = useCallback(async (currentInput: CalculationInput) => {
+    const currentValidationErrors = validateCalculationInput(currentInput);
+    const currentErrors = currentValidationErrors.reduce((acc, error, index) => {
+      acc[`validation_${index}`] = error;
+      return acc;
+    }, {} as Record<string, string>);
+
+    const currentCanCalculate = !hasCalculationErrors(currentInput) && Object.keys(currentErrors).length === 0;
+
+    if (!currentCanCalculate) {
+      onErrors(currentErrors);
       return;
     }
 
@@ -54,7 +63,7 @@ export const useCalculations = ({
       // Имитируем небольшую задержку для показа состояния загрузки
       await new Promise(resolve => setTimeout(resolve, 50));
       
-      const results = calculateMetrics(input);
+      const results = calculateMetrics(currentInput);
       onResults(results);
     } catch (error) {
       console.error('Ошибка при выполнении расчетов:', error);
@@ -64,21 +73,38 @@ export const useCalculations = ({
     } finally {
       onCalculating(false);
     }
-  }, [input, canCalculate, validationErrors, onResults, onErrors, onCalculating]);
+  }, [onResults, onErrors, onCalculating]);
 
   // Дебаунс для автоматических расчетов
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      performCalculation();
+    // Очищаем предыдущий таймер
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    if (!canCalculate) {
+      onErrors(validationErrors);
+      return;
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      performCalculation(input);
     }, debounceMs);
 
-    return () => clearTimeout(timeoutId);
-  }, [performCalculation, debounceMs]);
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [input, debounceMs, canCalculate, validationErrors, performCalculation]);
 
   // Функция для принудительного пересчета (например, по кнопке)
   const forceCalculate = useCallback(() => {
-    performCalculation();
-  }, [performCalculation]);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    performCalculation(input);
+  }, [input, performCalculation]);
 
   return {
     canCalculate,

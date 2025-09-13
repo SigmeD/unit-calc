@@ -6,12 +6,12 @@
  * Форматирует число как валюту
  */
 export const formatCurrency = (value: number, currency: string = '₽'): string => {
-  return new Intl.NumberFormat('ru-RU', {
-    style: 'currency',
-    currency: 'RUB',
+  const formatted = new Intl.NumberFormat('ru-RU', {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0
-  }).format(value).replace('RUB', currency);
+  }).format(value);
+  
+  return `${formatted} ${currency}`;
 };
 
 /**

@@ -13,14 +13,14 @@ import {
 describe('Formatters', () => {
   describe('formatCurrency', () => {
     it('formats currency correctly', () => {
-      expect(formatCurrency(1000)).toContain('1 000');
+      expect(formatCurrency(1000)).toMatch(/1\s000/);
       expect(formatCurrency(1000)).toContain('₽');
-      expect(formatCurrency(1500.50)).toContain('1 501');
+      expect(formatCurrency(1500.50)).toMatch(/1\s501/);
       expect(formatCurrency(0)).toContain('0');
     });
 
     it('formats currency with custom symbol', () => {
-      expect(formatCurrency(1000, '$')).toContain('1 000');
+      expect(formatCurrency(1000, '$')).toMatch(/1\s000/);
       expect(formatCurrency(1000, '$')).toContain('$');
     });
   });
@@ -40,8 +40,8 @@ describe('Formatters', () => {
 
   describe('formatNumber', () => {
     it('formats number correctly', () => {
-      expect(formatNumber(1000)).toContain('1 000');
-      expect(formatNumber(1000.5, 1)).toContain('1 000');
+      expect(formatNumber(1000)).toMatch(/1\s000/);
+      expect(formatNumber(1000.5, 1)).toMatch(/1\s000/);
       expect(formatNumber(0)).toBe('0');
     });
   });

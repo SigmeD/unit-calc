@@ -18,7 +18,6 @@ const Tooltip: React.FC<TooltipProps> = ({
   className = ''
 }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const [shouldShow, setShouldShow] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -26,21 +25,32 @@ const Tooltip: React.FC<TooltipProps> = ({
   const showTooltip = () => {
     if (disabled) return;
     
-    setShouldShow(true);
+    // Очищаем предыдущий таймер если есть
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
     }
     
-    timeoutRef.current = setTimeout(() => {
+    // Показываем с задержкой или сразу
+    if (delay > 0) {
+      timeoutRef.current = setTimeout(() => {
+        setIsVisible(true);
+        timeoutRef.current = null;
+      }, delay);
+    } else {
+      // Для delay=0 показываем сразу через флаш-обновление
       setIsVisible(true);
-    }, delay);
+    }
   };
 
   const hideTooltip = () => {
-    setShouldShow(false);
+    // Очищаем таймер показа если есть
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
     }
+    
+    // Сразу скрываем
     setIsVisible(false);
   };
 
@@ -99,14 +109,12 @@ const Tooltip: React.FC<TooltipProps> = ({
     >
       {children}
       
-      {shouldShow && (
+      {isVisible && (
         <div
           ref={tooltipRef}
-          className={`${positions.tooltip} transition-opacity duration-200 max-w-xs ${
-            isVisible ? 'opacity-100' : 'opacity-0'
-          } pointer-events-none`}
+          className={`${positions.tooltip} max-w-xs pointer-events-none opacity-100`}
           role="tooltip"
-          aria-hidden={!isVisible}
+          aria-hidden="false"
         >
           {content}
           <div className={positions.arrow} />
