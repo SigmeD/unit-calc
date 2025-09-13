@@ -9,6 +9,7 @@ export { default as TaxBlock } from './TaxBlock';
 export { default as PricingBlock } from './PricingBlock';
 export { default as DataInputForm } from './DataInputForm';
 export { default as ScenarioManager } from './ScenarioManager';
+export { default as AutoFillHelper } from './AutoFillHelper';
 
 export * from './MarketplaceSelector';
 export * from './MarketplaceSpecificFields';

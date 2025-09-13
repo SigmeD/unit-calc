@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { InputFieldProps } from '../../types';
+import Tooltip from './Tooltip';
 
 interface InputProps extends Omit<InputFieldProps, 'onChange'> {
   onChange: (value: number) => void;
@@ -65,7 +66,7 @@ const Input: React.FC<InputProps> = ({
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
         {tooltip && (
-          <div className="group relative">
+          <Tooltip content={tooltip} placement="top">
             <button
               type="button"
               className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100"
@@ -76,15 +77,7 @@ const Input: React.FC<InputProps> = ({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </button>
-            {/* Tooltip - только при hover на иконку */}
-            <div className="absolute right-0 bottom-full mb-2 w-72 p-3 bg-gray-900 text-white text-sm rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50 pointer-events-none">
-              <div className="relative">
-                {tooltip}
-                {/* Стрелочка tooltip */}
-                <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
-              </div>
-            </div>
-          </div>
+          </Tooltip>
         )}
       </div>
       

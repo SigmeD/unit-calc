@@ -1,11 +1,15 @@
 import React, { useState, memo } from 'react';
 import { COGSBlock, MarketplaceCostsBlock, AdditionalCostsBlock, TaxBlock, PricingBlock } from './';
+import AutoFillHelper from './AutoFillHelper';
+import { ProgressBar } from '../ui';
+import { useFormProgress } from '../../hooks';
 import type { CalculationInput, MarketplaceId } from '../../types';
 
 interface DataInputFormProps {
   marketplace: MarketplaceId;
   values: CalculationInput;
   onChange: (field: string, value: number | string) => void;
+  onBulkChange?: (values: Partial<CalculationInput>) => void;
   errors: Record<string, string>;
 }
 
@@ -66,11 +70,15 @@ const DataInputForm: React.FC<DataInputFormProps> = ({
   marketplace,
   values,
   onChange,
+  onBulkChange,
   errors
 }) => {
   const [expandedBlocks, setExpandedBlocks] = useState<Set<string>>(
     new Set(['cogs', 'marketplace', 'additional', 'tax', 'pricing'])
   );
+
+  // Используем хук для отслеживания прогресса
+  const { progress, filledFields, totalFields, completedSections, missingSections } = useFormProgress(values);
 
   const toggleBlock = (blockId: string) => {
     const newExpanded = new Set(expandedBlocks);
@@ -80,6 +88,17 @@ const DataInputForm: React.FC<DataInputFormProps> = ({
       newExpanded.add(blockId);
     }
     setExpandedBlocks(newExpanded);
+  };
+
+  const handleBulkChange = (newValues: Partial<CalculationInput>) => {
+    if (onBulkChange) {
+      onBulkChange(newValues);
+    } else {
+      // Fallback: применяем изменения через onChange
+      Object.entries(newValues).forEach(([field, value]) => {
+        onChange(field, value as number | string);
+      });
+    }
   };
 
   // Рассчитываем валовую прибыль для блока налогов
@@ -104,15 +123,30 @@ const DataInputForm: React.FC<DataInputFormProps> = ({
         </p>
       </div>
 
+      {/* Автозаполнение */}
+      <AutoFillHelper
+        marketplace={marketplace}
+        currentInput={values}
+        onApply={handleBulkChange}
+      />
+
       {/* Прогресс заполнения */}
       <div className="bg-white rounded-lg p-4 border border-gray-200">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-gray-700">Прогресс заполнения:</span>
-          <span className="text-sm text-gray-500">5 из 5 блоков</span>
+        <ProgressBar
+          progress={progress}
+          label="Прогресс заполнения"
+          color={progress === 100 ? 'green' : progress > 60 ? 'blue' : 'yellow'}
+          showPercentage={true}
+        />
+        <div className="flex items-center justify-between mt-3 text-xs text-gray-500">
+          <span>Заполнено полей: {filledFields} из {totalFields}</span>
+          <span>Готовых блоков: {completedSections.length} из 5</span>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div className="bg-blue-600 h-2 rounded-full w-full"></div>
-        </div>
+        {missingSections.length > 0 && (
+          <div className="mt-2 text-xs text-amber-600">
+            <span className="font-medium">Требуют внимания:</span> {missingSections.join(', ')}
+          </div>
+        )}
       </div>
 
       {/* Блок 1: Себестоимость */}
