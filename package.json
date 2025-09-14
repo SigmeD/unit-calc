@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "build:analyze": "npm run build && npx vite-bundle-analyzer dist/assets/*.js",
+    "build:size": "npm run build && npx vite-bundle-analyzer dist/assets/*.js --mode static",
     "build:preview": "npm run build && npm run preview",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -28,6 +29,7 @@
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^24.4.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@vitejs/plugin-react": "^5.0.0",
@@ -46,6 +48,7 @@
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.39.1",
     "vite": "^7.1.2",
+    "vite-bundle-analyzer": "^1.2.3",
     "vitest": "^3.2.4"
   }
 }

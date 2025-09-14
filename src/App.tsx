@@ -1,11 +1,11 @@
 import { useCallback, useState } from 'react';
-import { useAppState, useCalculations } from './hooks';
-import { MarketplaceSelector, DataInputForm, ScenarioManager } from './components/forms';
-import { ResultsPanel } from './components/results';
-import { Button } from './components/ui';
-import GlossaryModal from './components/ui/GlossaryModal';
-import Layout from './components/layout/Layout';
-import type { MarketplaceId, TaxRegime } from './types';
+import { useAppState, useCalculations } from '@/hooks';
+import { MarketplaceSelector, DataInputForm, ScenarioManager } from '@/components/forms';
+import { ResultsPanel } from '@/components/results';
+import { Button } from '@/components/ui';
+import GlossaryModal from '@/components/ui/GlossaryModal';
+import Layout from '@/components/layout/Layout';
+import type { MarketplaceId, TaxRegime } from '@/types';
 
 // Моковые данные маркетплейсов для демонстрации
 const mockMarketplaces = [

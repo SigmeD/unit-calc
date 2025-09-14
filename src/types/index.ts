@@ -231,3 +231,48 @@ export interface InputFieldProps {
   disabled?: boolean;
 }
 
+// Generic типы для лучшей типизации
+export type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
+
+export type NonEmptyArray<T> = [T, ...T[]];
+
+export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+
+export type RequiredFields<T, K extends keyof T> = T & Required<Pick<T, K>>;
+
+// Утилитарные типы для валидации
+export type ValidationResult = {
+  isValid: boolean;
+  errors: Record<string, string>;
+};
+
+export type FieldValidationResult = {
+  isValid: boolean;
+  error?: string;
+};
+
+// Типы для экспорта
+export type ExportFormat = 'excel' | 'csv' | 'json';
+
+export interface ExportOptions {
+  format: ExportFormat;
+  includeFormulas?: boolean;
+  includeBreakdown?: boolean;
+  filename?: string;
+}
+
+// Типы для аналитики
+export interface AnalyticsData {
+  timestamp: Date;
+  action: string;
+  data: Record<string, unknown>;
+}
+
+export interface PerformanceMetrics {
+  calculationTime: number;
+  memoryUsage: number;
+  bundleSize: number;
+}
+

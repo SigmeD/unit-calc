@@ -1,12 +1,22 @@
 {
   "files": [],
   "references": [
-    { "path": "./config/typescript/tsconfig.app.json" },
-    { "path": "./config/typescript/tsconfig.node.json" }
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
   ],
   "compilerOptions": {
     "strict": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@/components/*": ["src/components/*"],
+      "@/utils/*": ["src/utils/*"],
+      "@/hooks/*": ["src/hooks/*"],
+      "@/types/*": ["src/types/*"],
+      "@/calculations/*": ["src/calculations/*"],
+      "@/data/*": ["src/data/*"]
+    }
   }
 }

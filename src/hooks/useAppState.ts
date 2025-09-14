@@ -7,7 +7,7 @@ import type {
   CalculationInput, 
   CalculationResults,
   Scenario 
-} from '../types';
+} from '@/types';
 
 // Начальное состояние приложения
 const initialState: AppState = {

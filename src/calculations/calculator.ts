@@ -3,7 +3,7 @@
  * Этап 4: Core расчеты
  */
 
-import type { CalculationInput, CalculationResults, CostBreakdown, TaxRegime } from '../types';
+import type { CalculationInput, CalculationResults, CostBreakdown, TaxRegime } from '@/types';
 
 /**
  * Налоговые ставки для разных режимов

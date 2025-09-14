@@ -1,4 +1,4 @@
-import type { CalculationInput, Marketplace, ValidationRule, ValidationSchema } from '../types';
+import type { CalculationInput, Marketplace, ValidationRule, ValidationSchema } from '@/types';
 
 /**
  * Валидация базовых правил для поля

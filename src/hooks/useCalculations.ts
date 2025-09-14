@@ -4,8 +4,8 @@
  */
 
 import { useEffect, useCallback, useMemo, useRef } from 'react';
-import { calculateMetrics, validateCalculationInput, hasCalculationErrors } from '../calculations';
-import type { CalculationInput, CalculationResults } from '../types';
+import { calculateMetrics, validateCalculationInput, hasCalculationErrors } from '@/calculations';
+import type { CalculationInput, CalculationResults } from '@/types';
 
 interface UseCalculationsOptions {
   input: CalculationInput;
@@ -25,7 +25,7 @@ export const useCalculations = ({
   onCalculating,
   debounceMs = 300
 }: UseCalculationsOptions) => {
-  const timeoutRef = useRef<number | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Мемоизируем валидацию входных данных
   const validationErrors = useMemo(() => {

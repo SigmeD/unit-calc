@@ -1,9 +1,9 @@
 import React, { useState, memo } from 'react';
 import { COGSBlock, MarketplaceCostsBlock, AdditionalCostsBlock, TaxBlock, PricingBlock } from './';
 import AutoFillHelper from './AutoFillHelper';
-import { ProgressBar } from '../ui';
-import { useFormProgress } from '../../hooks';
-import type { CalculationInput, MarketplaceId } from '../../types';
+import { ProgressBar } from '@/components/ui';
+import { useFormProgress } from '@/hooks';
+import type { CalculationInput, MarketplaceId } from '@/types';
 
 interface DataInputFormProps {
   marketplace: MarketplaceId;
