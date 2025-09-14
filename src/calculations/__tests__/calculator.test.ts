@@ -114,11 +114,11 @@ describe('UnitEconomicsCalculator', () => {
       const results = calculateMetrics(baseInput);
       const { taxes } = results.breakdown;
       
-      // Налоговая база для УСН 6% = доходы = 1710
-      expect(taxes.base).toBe(1710);
+      // Налоговая база для УСН 6% = доходы (фактическая выручка) = 1197
+      expect(taxes.base).toBe(1197);
       expect(taxes.rate).toBe(0.06);
-      // Налог: 1710 * 0.06 = 102.6
-      expect(taxes.amount).toBe(102.6);
+      // Налог: 1197 * 0.06 = 71.82
+      expect(taxes.amount).toBeCloseTo(71.82, 1);
     });
 
     test('должен правильно рассчитывать налоги для УСН 15%', () => {
@@ -127,11 +127,11 @@ describe('UnitEconomicsCalculator', () => {
       const { taxes } = results.breakdown;
       
       // Налоговая база для УСН 15% = доходы - расходы
-      // 1710 - 600 - 423.6 - 675 = 11.4
-      expect(taxes.base).toBeCloseTo(11.4, 1);
+      // 1197 - 600 - 423.6 - 675 = -501.6 (убыток, налог = 0)
+      expect(taxes.base).toBeCloseTo(-501.6, 1);
       expect(taxes.rate).toBe(0.15);
-      // Налог: 11.4 * 0.15 = 1.71
-      expect(taxes.amount).toBeCloseTo(1.71, 2);
+      // Налог: max(0, -501.6 * 0.15) = 0
+      expect(taxes.amount).toBeCloseTo(0, 2);
     });
   });
 
@@ -155,16 +155,16 @@ describe('UnitEconomicsCalculator', () => {
       const results = calculateMetrics(baseInput);
       
       // Чистая прибыль = CM2 - прочие переменные - доля фиксированных - налоги
-      // 23.4 - 25 - 500 - 102.6 = -604.2
-      expect(results.netProfit).toBeCloseTo(-604.2, 1);
+      // 23.4 - 25 - 500 - 71.82 = -573.42
+      expect(results.netProfit).toBeCloseTo(-573.42, 1);
     });
 
     test('должен правильно рассчитывать маржинальность', () => {
       const results = calculateMetrics(baseInput);
       
       // Маржинальность = (Чистая прибыль / Выручка) * 100%
-      // (-604.2 / 1197) * 100% ≈ -50.48%
-      expect(results.marginPercent).toBeCloseTo(-50.48, 1);
+      // (-573.42 / 1197) * 100% ≈ -47.90%
+      expect(results.marginPercent).toBeCloseTo(-47.90, 1);
     });
 
     test('должен правильно определять статус убыточности', () => {
@@ -178,8 +178,8 @@ describe('UnitEconomicsCalculator', () => {
       const results = calculateMetrics(baseInput);
       
       // ROI = (Чистая прибыль / Себестоимость) * 100%
-      // (-604.2 / 600) * 100% ≈ -100.7%
-      expect(results.roi).toBeCloseTo(-100.7, 1);
+      // (-573.42 / 600) * 100% ≈ -95.57%
+      expect(results.roi).toBeCloseTo(-95.57, 1);
     });
 
     test('должен правильно рассчитывать ACOS', () => {

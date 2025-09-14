@@ -136,7 +136,8 @@ export class UnitEconomicsCalculator {
     };
 
     // Блок 4: Налоги
-    const taxBase = this.calculateTaxBase(effectivePrice, totalCOGS, marketplaceFees.total, additionalCosts.total);
+    const revenue = effectivePrice * (this.calculateEffectivePickupRate() / 100);
+    const taxBase = this.calculateTaxBase(revenue, totalCOGS, marketplaceFees.total, additionalCosts.total);
     const taxRate = TAX_RATES[this.input.taxRegime];
     const taxAmount = Math.max(0, taxBase * taxRate);
     
@@ -160,21 +161,21 @@ export class UnitEconomicsCalculator {
   /**
    * Рассчитывает налоговую базу в зависимости от режима
    */
-  private calculateTaxBase(effectivePrice: number, cogs: number, marketplaceFees: number, additionalCosts: number): number {
+  private calculateTaxBase(revenue: number, cogs: number, marketplaceFees: number, additionalCosts: number): number {
     const { taxRegime } = this.input;
     
     switch (taxRegime) {
       case 'USN_6':
-        // УСН 6%: налоговая база = доходы
-        return effectivePrice;
+        // УСН 6%: налоговая база = доходы (фактическая выручка)
+        return revenue;
       
       case 'USN_15':
         // УСН 15%: налоговая база = доходы - расходы
-        return effectivePrice - cogs - marketplaceFees - additionalCosts;
+        return revenue - cogs - marketplaceFees - additionalCosts;
       
       case 'OSNO':
         // ОСНО упрощенно: налоговая база = прибыль
-        return effectivePrice - cogs - marketplaceFees - additionalCosts;
+        return revenue - cogs - marketplaceFees - additionalCosts;
       
       default:
         return 0;
@@ -276,7 +277,7 @@ export class UnitEconomicsCalculator {
       const returnsAmount = effectivePrice * (returnRate / 100) * (returnProcessing / 100);
       const marketplaceCosts = commissionAmount + logistics + storage + returnsAmount;
       
-      const taxBase = this.calculateTaxBase(effectivePrice, totalCOGS, marketplaceCosts, advertising + otherVariableCosts + fixedPerUnit);
+      const taxBase = this.calculateTaxBase(revenue, totalCOGS, marketplaceCosts, advertising + otherVariableCosts + fixedPerUnit);
       const taxAmount = Math.max(0, taxBase * TAX_RATES[this.input.taxRegime]);
       
       const totalCosts = totalCOGS + marketplaceCosts + advertising + otherVariableCosts + fixedPerUnit + taxAmount;
