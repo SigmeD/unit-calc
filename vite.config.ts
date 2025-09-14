@@ -63,6 +63,12 @@ export default defineConfig({
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash].[ext]'
+      },
+      // Оптимизация tree-shaking
+      treeshake: {
+        moduleSideEffects: false,
+        propertyReadSideEffects: false,
+        tryCatchDeoptimization: false
       }
     },
     // Оптимизация чанков
@@ -70,7 +76,10 @@ export default defineConfig({
     // Оптимизация CSS
     cssCodeSplit: true,
     // Оптимизация ассетов
-    assetsInlineLimit: 4096
+    assetsInlineLimit: 4096,
+    // Дополнительные оптимизации
+    reportCompressedSize: false, // Ускоряет сборку
+    emptyOutDir: true
   },
   // Оптимизация development режима
   optimizeDeps: {
