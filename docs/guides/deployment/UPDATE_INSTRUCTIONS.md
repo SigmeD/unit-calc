@@ -4,7 +4,7 @@
 
 ```bash
 # 1. Запустите PowerShell скрипт
-.\quick-update.ps1
+.\scripts\git\quick-update.ps1
 
 # 2. Или одну команду
 git add . && git commit -m "Update project" && git push origin main
@@ -56,4 +56,4 @@ git remote set-url origin https://github.com/SigmeD/unit-calc.git
 
 ---
 
-**💡 Совет:** Используйте `.\quick-update.ps1` для автоматического обновления!
+**💡 Совет:** Используйте `.\scripts\git\quick-update.ps1` для автоматического обновления!

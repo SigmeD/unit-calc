@@ -24,22 +24,22 @@
 ### Быстрый старт
 ```bash
 # Первоначальная настройка
-./setup.ps1
+./scripts/setup/setup.ps1
 
 # Быстрое обновление кода
-./git/quick-update.ps1
+./scripts/git/quick-update.ps1
 
 # Запуск тестов
-./test/run_tests.bat
+./scripts/test/run_tests.bat
 ```
 
 ### Git операции
 ```bash
 # Обновление репозитория
-./git/update-repo.ps1
+./scripts/git/update-repo.ps1
 
 # Слияние в main
-./git/merge-to-main.ps1
+./scripts/git/merge-to-main.ps1
 ```
 
 ## 📝 Примечания

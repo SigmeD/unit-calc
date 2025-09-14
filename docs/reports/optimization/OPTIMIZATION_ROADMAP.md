@@ -335,8 +335,8 @@ unit_calc/
 - ✅ Этап 2: Реорганизация документации (45 мин)
 
 ### **Неделя 2: Структурирование**
-- ✅ Этап 3: Организация скриптов (30 мин)
-- ✅ Этап 4: Конфигурационные файлы (20 мин)
+- ✅ Этап 3: Организация скриптов (30 мин) - **ЗАВЕРШЕН 14.09.2025**
+- ⏳ Этап 4: Конфигурационные файлы (20 мин)
 
 ### **Неделя 3: Финализация**
 - ✅ Этап 5: Финальная оптимизация (15 мин)
@@ -401,25 +401,25 @@ unit_calc/
   - [ ] Проверены все cross-references
 
 ### **Этап 3: Организация скриптов** ⚙️
-- [ ] **3.1 Создание структуры scripts/:**
-  - [ ] Создана папка `scripts/setup/`
-  - [ ] Создана папка `scripts/git/`
-  - [ ] Создана папка `scripts/test/`
-- [ ] **3.2 Перемещение скриптов:**
-  - [ ] Перемещен `setup.ps1` → `scripts/setup/`
-  - [ ] Перемещен `git-setup.bat` → `scripts/setup/`
-  - [ ] Перемещен `merge-to-main.ps1` → `scripts/git/`
-  - [ ] Перемещен `quick-update.ps1` → `scripts/git/`
-  - [ ] Перемещен `update-repo.ps1` → `scripts/git/`
-  - [ ] Перемещен `update-repo.bat` → `scripts/git/`
-  - [ ] Перемещен `git-commands.txt` → `scripts/git/`
-  - [ ] Перемещен `run_tests.bat` → `scripts/test/`
-  - [ ] Перемещен `test-runner.ps1` → `scripts/test/`
-- [ ] **3.3 Обновление package.json:**
-  - [ ] Обновлены пути к скриптам в scripts секции
-  - [ ] Протестированы команды npm
-- [ ] **3.4 Документация:**
-  - [ ] Создан `scripts/README.md` с описанием всех скриптов
+- [x] **3.1 Создание структуры scripts/:**
+  - [x] Создана папка `scripts/setup/`
+  - [x] Создана папка `scripts/git/`
+  - [x] Создана папка `scripts/test/`
+- [x] **3.2 Перемещение скриптов:**
+  - [x] Перемещен `setup.ps1` → `scripts/setup/`
+  - [x] Перемещен `git-setup.bat` → `scripts/setup/`
+  - [x] Перемещен `merge-to-main.ps1` → `scripts/git/`
+  - [x] Перемещен `quick-update.ps1` → `scripts/git/`
+  - [x] Перемещен `update-repo.ps1` → `scripts/git/`
+  - [x] Перемещен `update-repo.bat` → `scripts/git/`
+  - [x] Перемещен `git-commands.txt` → `scripts/git/`
+  - [x] Перемещен `run_tests.bat` → `scripts/test/`
+  - [x] Перемещен `test-runner.ps1` → `scripts/test/`
+- [x] **3.3 Обновление package.json:**
+  - [x] Проверены пути к скриптам (npm scripts не изменились)
+  - [x] Package.json не требует изменений
+- [x] **3.4 Документация:**
+  - [x] Обновлен `scripts/README.md` с новыми путями
 
 ### **Этап 4: Конфигурационные файлы** ⚙️
 - [ ] **4.1 Создание структуры config/:**
