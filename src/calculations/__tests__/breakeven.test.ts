@@ -8,7 +8,8 @@ import type { CalculationInput } from '../../types';
 describe('Точка безубыточности', () => {
   test('должен показывать текущую цену как точку безубыточности при нулевой прибыли', () => {
     // Создаем сценарий, где прибыль должна быть близка к нулю
-    const input: CalculationInput = {
+    // Сначала рассчитываем точку безубыточности, затем используем её как retailPrice
+    const baseInput: CalculationInput = {
       // Блок 1: Себестоимость
       purchasePrice: 1000,
       deliveryToWarehouse: 50,
@@ -40,15 +41,26 @@ describe('Точка безубыточности', () => {
       specificData: {}
     };
 
+    // Получаем точку безубыточности
+    const baseResults = calculateMetrics(baseInput);
+    const breakEvenPrice = baseResults.breakEvenPrice;
+    
+    // Создаем новый input с ценой, равной точке безубыточности
+    const input: CalculationInput = {
+      ...baseInput,
+      retailPrice: breakEvenPrice
+    };
+
     const results = calculateMetrics(input);
     
+    console.log('Точка безубыточности:', breakEvenPrice);
     console.log('Текущая цена:', input.retailPrice);
-    console.log('Точка безубыточности:', results.breakEvenPrice);
     console.log('Чистая прибыль:', results.netProfit);
     console.log('Статус:', results.status);
     
-    // Точка безубыточности должна быть близка к текущей цене
-    expect(Math.abs(results.breakEvenPrice - input.retailPrice)).toBeLessThan(100);
+    // При цене равной точке безубыточности прибыль должна быть близка к нулю
+    expect(Math.abs(results.netProfit)).toBeLessThan(1);
+    expect(results.status).toBe('breakeven');
   });
 
   test('должен правильно рассчитывать точку безубыточности с учетом скидок', () => {

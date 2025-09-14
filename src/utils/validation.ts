@@ -31,7 +31,7 @@ export const validateField = (value: string | number | undefined | null, rules: 
     }
 
     // Пользовательская валидация
-    if (rule.custom && !rule.custom(value)) {
+    if (rule.custom && value !== undefined && value !== null && !rule.custom(value)) {
       return rule.message;
     }
   }
@@ -42,7 +42,7 @@ export const validateField = (value: string | number | undefined | null, rules: 
 /**
  * Схема валидации для основных полей калькулятора
  */
-export const getValidationSchema = (): ValidationSchema => {
+export const getValidationSchema = (marketplace?: Marketplace): ValidationSchema => {
   return {
     // Блок 1: Себестоимость
     purchasePrice: [
@@ -219,7 +219,11 @@ export const validateCalculationInput = (
   // Валидация по схеме
   Object.entries(schema).forEach(([fieldName, rules]) => {
     const value = input[fieldName as keyof CalculationInput];
-    const error = validateField(value, rules);
+    // Приводим значение к правильному типу для validateField
+    const fieldValue = typeof value === 'object' && value !== null ? 
+      (typeof value === 'number' ? value : String(value)) : 
+      value as string | number | undefined | null;
+    const error = validateField(fieldValue, rules);
     if (error) {
       errors[fieldName] = error;
     }

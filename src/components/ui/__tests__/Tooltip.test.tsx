@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import Tooltip from '../Tooltip';
 
@@ -118,8 +118,8 @@ describe('Tooltip', () => {
   });
 
   describe('Задержка отображения', () => {
-    it('должен применять задержку перед показом tooltip', async () => {
-      vi.useFakeTimers(); // Включаем fake timers только для этого теста
+    it('должен применять задержку перед показом tooltip', () => {
+      vi.useFakeTimers();
       
       render(
         <Tooltip content="Тест tooltip" delay={100}>
@@ -128,21 +128,27 @@ describe('Tooltip', () => {
       );
 
       const button = screen.getByRole('button');
-      fireEvent.mouseEnter(button);
+      
+      act(() => {
+        fireEvent.mouseEnter(button);
+      });
 
       // Tooltip не должен появиться сразу
       expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
 
       // Продвигаем время на 50ms - tooltip все еще не должен быть виден
-      vi.advanceTimersByTime(50);
+      act(() => {
+        vi.advanceTimersByTime(50);
+      });
       expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
 
       // Продвигаем время до 100ms - tooltip должен появиться
-      vi.advanceTimersByTime(50);
-
-      await waitFor(() => {
-        expect(screen.getByRole('tooltip')).toBeInTheDocument();
+      act(() => {
+        vi.advanceTimersByTime(50);
       });
+
+      // Проверяем, что tooltip появился
+      expect(screen.getByRole('tooltip')).toBeInTheDocument();
       
       vi.useRealTimers();
     });

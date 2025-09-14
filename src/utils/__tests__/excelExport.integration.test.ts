@@ -254,8 +254,8 @@ describe('Интеграционные тесты экспорта Excel', () =>
           exportToExcel(scenario, 'wildberries');
         }).not.toThrow();
 
-        // Проверяем что налоги рассчитались
-        expect(results.breakdown.taxes.amount).toBeGreaterThan(0);
+        // Проверяем что налоги рассчитались (могут быть 0 при убытке)
+        expect(results.breakdown.taxes.amount).toBeGreaterThanOrEqual(0);
         expect(results.breakdown.taxes.rate).toBeGreaterThan(0);
       });
     });

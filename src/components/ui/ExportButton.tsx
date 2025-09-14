@@ -46,6 +46,9 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
     setShowOptions(false);
 
     try {
+      // Имитируем небольшую задержку для показа состояния загрузки
+      await new Promise(resolve => setTimeout(resolve, 50));
+      
       const result = exportCurrentScenario(scenario, marketplace, true);
       
       if (result.success) {
@@ -72,6 +75,9 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
     setShowOptions(false);
 
     try {
+      // Имитируем небольшую задержку для показа состояния загрузки
+      await new Promise(resolve => setTimeout(resolve, 50));
+      
       const result = exportDataOnly(scenario, marketplace);
       
       if (result.success) {

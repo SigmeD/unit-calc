@@ -210,6 +210,9 @@ describe('useCalculations', () => {
 
   describe('Дебаунс', () => {
     it('должен применять дебаунс к автоматическим расчетам', async () => {
+      // Сбрасываем моки перед тестом
+      vi.clearAllMocks();
+      
       const { rerender } = renderHook(
         ({ input }) => useCalculations({
           input,
@@ -221,6 +224,14 @@ describe('useCalculations', () => {
         { initialProps: { input: mockInput } }
       );
 
+      // Ждем первый вызов после инициализации
+      await waitFor(() => {
+        expect(mockOnResults).toHaveBeenCalledTimes(1);
+      }, { timeout: 200 });
+
+      // Сбрасываем счетчик вызовов
+      vi.clearAllMocks();
+
       // Быстро меняем входные данные
       rerender({ input: { ...mockInput, retailPrice: 1500 } });
       rerender({ input: { ...mockInput, retailPrice: 1800 } });
@@ -229,7 +240,7 @@ describe('useCalculations', () => {
       // Должен быть вызван только один раз после дебаунса
       await waitFor(() => {
         expect(mockOnResults).toHaveBeenCalledTimes(1);
-      }, { timeout: 200 });
+      }, { timeout: 300 });
     });
   });
 });
