@@ -247,13 +247,14 @@ export class UnitEconomicsCalculator {
 
   /**
    * Рассчитывает минимальную цену для безубыточности
+   * Использует аналитический подход для более точного расчета
    */
   private calculateBreakEvenPrice(): number {
     const { 
       purchasePrice, deliveryToWarehouse, packaging, otherCOGS,
       commission, logistics, storage, returnProcessing,
       advertising, otherVariableCosts, fixedCostsPerMonth, expectedSalesPerMonth,
-      pickupRate, returnRate, sellerDiscount, additionalPromo
+      pickupRate, returnRate, sellerDiscount, additionalPromo, taxRegime
     } = this.input;
 
     const totalCOGS = purchasePrice + deliveryToWarehouse + packaging + otherCOGS;
@@ -264,35 +265,58 @@ export class UnitEconomicsCalculator {
     const effectivePickupRate = Math.max(0.01, (pickupRate - returnRate) / 100);
     const discountMultiplier = (1 - sellerDiscount / 100) * (1 - additionalPromo / 100);
     
-    // Итеративный расчет, так как цена влияет на комиссию и налоги
-    let price = 1000; // Начальная точка
-    let iterations = 0;
-    const maxIterations = 100;
+    // Переменные расходы на единицу (не зависящие от цены)
+    const fixedVariableCosts = totalCOGS + logistics + storage + advertising + otherVariableCosts + fixedPerUnit;
     
-    while (iterations < maxIterations) {
-      const effectivePrice = price * discountMultiplier;
-      const revenue = effectivePrice * effectivePickupRate;
+    // Коэффициенты, зависящие от цены
+    const commissionRate = commission / 100;
+    const returnRateDecimal = returnRate / 100;
+    const returnProcessingRate = returnProcessing / 100;
+    
+    // Налоговые коэффициенты
+    const taxRate = TAX_RATES[taxRegime];
+    
+    // Для УСН 6% налог рассчитывается от выручки
+    // Для УСН 15% и ОСНО - от прибыли
+    if (taxRegime === 'USN_6') {
+      // УСН 6%: Налог = Выручка * 6%
+      // Уравнение: Выручка - Переменные_расходы - Комиссия - Возвраты - Налог = 0
+      // effectivePrice * effectivePickupRate - fixedVariableCosts - effectivePrice * commissionRate - effectivePrice * returnRateDecimal * returnProcessingRate - effectivePrice * effectivePickupRate * taxRate = 0
+      // effectivePrice * (effectivePickupRate * (1 - taxRate) - commissionRate - returnRateDecimal * returnProcessingRate) = fixedVariableCosts
       
-      const commissionAmount = effectivePrice * (commission / 100);
-      const returnsAmount = effectivePrice * (returnRate / 100) * (returnProcessing / 100);
-      const marketplaceCosts = commissionAmount + logistics + storage + returnsAmount;
+      const coefficient = effectivePickupRate * (1 - taxRate) - commissionRate - returnRateDecimal * returnProcessingRate;
       
-      const taxBase = this.calculateTaxBase(revenue, totalCOGS, marketplaceCosts, advertising + otherVariableCosts + fixedPerUnit);
-      const taxAmount = Math.max(0, taxBase * TAX_RATES[this.input.taxRegime]);
+      if (coefficient <= 0) {
+        // Невозможно достичь безубыточности при таких параметрах
+        return Infinity;
+      }
       
-      const totalCosts = totalCOGS + marketplaceCosts + advertising + otherVariableCosts + fixedPerUnit + taxAmount;
+      const effectivePrice = fixedVariableCosts / coefficient;
+      // Учитываем скидки: retailPrice = effectivePrice / discountMultiplier
+      const retailPrice = effectivePrice / discountMultiplier;
+      return Math.max(0, retailPrice);
       
-      const profit = revenue - totalCosts;
+    } else {
+      // УСН 15% и ОСНО: Налог = Прибыль * налоговая_ставка
+      // Уравнение: Выручка - Переменные_расходы - Комиссия - Возвраты - Налог = 0
+      // где Налог = (Выручка - Переменные_расходы - Комиссия - Возвраты) * налоговая_ставка
       
-      if (Math.abs(profit) < 0.01) break;
+      // effectivePrice * effectivePickupRate - fixedVariableCosts - effectivePrice * commissionRate - effectivePrice * returnRateDecimal * returnProcessingRate - (effectivePrice * effectivePickupRate - fixedVariableCosts - effectivePrice * commissionRate - effectivePrice * returnRateDecimal * returnProcessingRate) * taxRate = 0
+      // (effectivePrice * effectivePickupRate - fixedVariableCosts - effectivePrice * commissionRate - effectivePrice * returnRateDecimal * returnProcessingRate) * (1 - taxRate) = 0
+      // effectivePrice * (effectivePickupRate * (1 - taxRate) - commissionRate * (1 - taxRate) - returnRateDecimal * returnProcessingRate * (1 - taxRate)) = fixedVariableCosts * (1 - taxRate)
       
-      // Корректируем цену
-      const adjustment = profit < 0 ? 50 : -50;
-      price += adjustment;
-      iterations++;
+      const coefficient = effectivePickupRate * (1 - taxRate) - commissionRate * (1 - taxRate) - returnRateDecimal * returnProcessingRate * (1 - taxRate);
+      
+      if (coefficient <= 0) {
+        // Невозможно достичь безубыточности при таких параметрах
+        return Infinity;
+      }
+      
+      const effectivePrice = fixedVariableCosts / coefficient;
+      // Учитываем скидки: retailPrice = effectivePrice / discountMultiplier
+      const retailPrice = effectivePrice / discountMultiplier;
+      return Math.max(0, retailPrice);
     }
-    
-    return Math.max(0, price);
   }
 
   /**
@@ -307,9 +331,10 @@ export class UnitEconomicsCalculator {
     const revenuePerUnit = effectivePrice * effectivePickupRate;
     const breakdown = this.calculateCostBreakdown(effectivePrice);
     
-    // Переменные расходы на единицу (без фиксированных и налогов)
+    // Переменные расходы на единицу (включая налоги, но без фиксированных)
     const variableCostsPerUnit = breakdown.totalCOGS + breakdown.marketplaceFees.total + 
-                                breakdown.additionalCosts.advertising + breakdown.additionalCosts.otherVariable;
+                                breakdown.additionalCosts.advertising + breakdown.additionalCosts.otherVariable +
+                                breakdown.taxes.amount;
     
     const contributionMarginPerUnit = revenuePerUnit - variableCostsPerUnit;
     

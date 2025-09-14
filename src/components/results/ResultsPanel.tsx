@@ -189,6 +189,103 @@ const ResultsPanelComponent: React.FC<ResultsPanelProps> = ({
           />
         </div>
 
+        {/* Детализация расходов */}
+        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <h4 className="font-semibold text-gray-700 mb-4">Детализация расходов</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Блок 1: Себестоимость (COGS) */}
+            <div className="bg-white p-3 rounded-lg border border-gray-200">
+              <h5 className="font-medium text-gray-700 mb-2 text-sm">Блок 1: Себестоимость</h5>
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between">
+                  <span>Закупка:</span>
+                  <span className="font-medium">{formatCurrency(results.breakdown.totalCOGS)}</span>
+                </div>
+                <div className="text-gray-500 text-xs">
+                  (включает доставку, упаковку, прочее)
+                </div>
+              </div>
+            </div>
+
+            {/* Блок 2: Расходы маркетплейса */}
+            <div className="bg-white p-3 rounded-lg border border-gray-200">
+              <h5 className="font-medium text-gray-700 mb-2 text-sm">Блок 2: Маркетплейс</h5>
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between">
+                  <span>Комиссия:</span>
+                  <span className="font-medium">{formatCurrency(results.breakdown.marketplaceFees.commission)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Логистика:</span>
+                  <span className="font-medium">{formatCurrency(results.breakdown.marketplaceFees.logistics)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Хранение:</span>
+                  <span className="font-medium">{formatCurrency(results.breakdown.marketplaceFees.storage)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Возвраты:</span>
+                  <span className="font-medium">{formatCurrency(results.breakdown.marketplaceFees.returns)}</span>
+                </div>
+                <div className="flex justify-between border-t pt-1 font-medium">
+                  <span>Итого:</span>
+                  <span>{formatCurrency(results.breakdown.marketplaceFees.total)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Блок 3: Дополнительные расходы */}
+            <div className="bg-white p-3 rounded-lg border border-gray-200">
+              <h5 className="font-medium text-gray-700 mb-2 text-sm">Блок 3: Доп. расходы</h5>
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between">
+                  <span>Реклама:</span>
+                  <span className="font-medium">{formatCurrency(results.breakdown.additionalCosts.advertising)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Прочие:</span>
+                  <span className="font-medium">{formatCurrency(results.breakdown.additionalCosts.otherVariable)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Фиксированные:</span>
+                  <span className="font-medium">{formatCurrency(results.breakdown.additionalCosts.fixedPerUnit)}</span>
+                </div>
+                <div className="flex justify-between border-t pt-1 font-medium">
+                  <span>Итого:</span>
+                  <span>{formatCurrency(results.breakdown.additionalCosts.total)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Блок 4: Налогообложение */}
+            <div className="bg-white p-3 rounded-lg border border-gray-200">
+              <h5 className="font-medium text-gray-700 mb-2 text-sm">Блок 4: Налоги</h5>
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between">
+                  <span>Ставка:</span>
+                  <span className="font-medium">{formatPercent(results.breakdown.taxes.rate * 100)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>База:</span>
+                  <span className="font-medium">{formatCurrency(results.breakdown.taxes.base)}</span>
+                </div>
+                <div className="flex justify-between border-t pt-1 font-medium">
+                  <span>Налог:</span>
+                  <span>{formatCurrency(results.breakdown.taxes.amount)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Общая сумма расходов */}
+          <div className="mt-4 pt-3 border-t border-gray-300">
+            <div className="flex justify-between items-center">
+              <span className="font-semibold text-gray-700">Общие расходы с единицы:</span>
+              <span className="text-lg font-bold text-red-600">{formatCurrency(results.breakdown.totalCosts)}</span>
+            </div>
+          </div>
+        </div>
+
         {/* Детальная информация */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
