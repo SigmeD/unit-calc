@@ -1,0 +1,30 @@
+User-agent: *
+Allow: /
+
+# Разрешаем индексацию всех страниц
+Allow: /
+
+# Запрещаем индексацию тестовых файлов
+Disallow: /test/
+Disallow: /*.test.js
+Disallow: /*.test.ts
+Disallow: /*.spec.js
+Disallow: /*.spec.ts
+
+# Разрешаем основные статические ресурсы
+Allow: *.css
+Allow: *.js
+Allow: *.png
+Allow: *.jpg
+Allow: *.jpeg
+Allow: *.gif
+Allow: *.svg
+Allow: *.ico
+
+# Время задержки для поисковых роботов
+Crawl-delay: 1
+
+# Sitemap (будет добавлен при необходимости)
+# Sitemap: https://your-domain.com/sitemap.xml
+
+

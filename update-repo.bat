@@ -28,3 +28,5 @@ git push -u origin --all
 
 echo Готово!
 pause
+
+

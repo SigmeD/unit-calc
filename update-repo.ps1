@@ -31,3 +31,5 @@ git push -u origin --all
 
 Write-Host "Готово!" -ForegroundColor Green
 Read-Host "Нажмите Enter для продолжения"
+
+
