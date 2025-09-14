@@ -9,10 +9,29 @@ interface AdditionalCostsBlockProps {
 }
 
 const AdditionalCostsBlock: React.FC<AdditionalCostsBlockProps> = ({ values, onChange, errors }) => {
-  // Рассчитываем долю фиксированных расходов на единицу
-  const fixedCostPerUnit = values.expectedSalesPerMonth && values.expectedSalesPerMonth > 0 
-    ? values.fixedCostsPerMonth / values.expectedSalesPerMonth 
+  // Хелпер для форматирования валюты
+  const formatCurrency = (value: number) =>
+    value.toLocaleString('ru-RU', { maximumFractionDigits: 2 });
+
+  // Логика проверки отображения блока фиксированных расходов
+  const showFixedCost =
+    values.fixedCostsPerMonth > 0 &&
+    values.expectedSalesPerMonth &&
+    values.expectedSalesPerMonth > 0;
+
+  // Предварительные вычисления
+  const fixedCostPerUnit = showFixedCost 
+    ? values.fixedCostsPerMonth / (values.expectedSalesPerMonth || 1)
     : 0;
+
+  const totalAdditionalCosts = values.advertising + values.otherVariableCosts + fixedCostPerUnit;
+
+  // Предварительное форматирование значений
+  const fixedCostPerUnitFormatted = formatCurrency(fixedCostPerUnit);
+  const fixedCostsFormatted = values.fixedCostsPerMonth.toLocaleString('ru-RU');
+  const advertisingFormatted = formatCurrency(values.advertising);
+  const otherVariableCostsFormatted = formatCurrency(values.otherVariableCosts);
+  const totalAdditionalCostsFormatted = formatCurrency(totalAdditionalCosts);
 
   return (
     <Card 
@@ -66,18 +85,18 @@ const AdditionalCostsBlock: React.FC<AdditionalCostsBlockProps> = ({ values, onC
       </div>
 
       {/* Расчет доли фиксированных расходов */}
-      {values.fixedCostsPerMonth > 0 && values.expectedSalesPerMonth && values.expectedSalesPerMonth > 0 && (
+      {showFixedCost && (
         <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-yellow-800">
               Доля фиксированных расходов на единицу:
             </span>
             <span className="text-lg font-bold text-yellow-900">
-              {fixedCostPerUnit.toLocaleString('ru-RU', { maximumFractionDigits: 2 })} ₽
+              {fixedCostPerUnitFormatted} ₽
             </span>
           </div>
           <p className="text-xs text-yellow-700 mt-1">
-            Рассчитано как: {values.fixedCostsPerMonth.toLocaleString('ru-RU')} ₽ ÷ {values.expectedSalesPerMonth} шт.
+            Рассчитано как: {fixedCostsFormatted} ₽ ÷ {values.expectedSalesPerMonth} шт.
           </p>
         </div>
       )}
@@ -89,21 +108,21 @@ const AdditionalCostsBlock: React.FC<AdditionalCostsBlockProps> = ({ values, onC
             Дополнительные расходы на единицу:
           </span>
           <span className="text-lg font-bold text-gray-900">
-            {(values.advertising + values.otherVariableCosts + fixedCostPerUnit).toLocaleString('ru-RU', { maximumFractionDigits: 2 })} ₽
+            {totalAdditionalCostsFormatted} ₽
           </span>
         </div>
         <div className="text-xs text-gray-500 mt-1 space-y-1">
           <div className="flex justify-between">
             <span>• Реклама:</span>
-            <span>{values.advertising.toLocaleString('ru-RU')} ₽</span>
+            <span>{advertisingFormatted} ₽</span>
           </div>
           <div className="flex justify-between">
             <span>• Прочие переменные:</span>
-            <span>{values.otherVariableCosts.toLocaleString('ru-RU')} ₽</span>
+            <span>{otherVariableCostsFormatted} ₽</span>
           </div>
           <div className="flex justify-between">
             <span>• Доля фиксированных:</span>
-            <span>{fixedCostPerUnit.toLocaleString('ru-RU', { maximumFractionDigits: 2 })} ₽</span>
+            <span>{fixedCostPerUnitFormatted} ₽</span>
           </div>
         </div>
       </div>
