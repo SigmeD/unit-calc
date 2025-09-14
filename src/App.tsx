@@ -4,6 +4,7 @@ import { MarketplaceSelector, DataInputForm, ScenarioManager } from './component
 import { ResultsPanel } from './components/results';
 import { Button } from './components/ui';
 import GlossaryModal from './components/ui/GlossaryModal';
+import Layout from './components/layout/Layout';
 import type { MarketplaceId, TaxRegime } from './types';
 
 // Моковые данные маркетплейсов для демонстрации
@@ -123,9 +124,10 @@ function App() {
   const currentMarketplace = mockMarketplaces.find(mp => mp.id === selectedMarketplace);
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 py-4 md:py-8">
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
-        <div className="space-y-4 md:space-y-8">
+    <Layout>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 py-4 md:py-8">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
+          <div className="space-y-4 md:space-y-8">
           {/* Заголовок */}
         <div className="text-center mb-6 md:mb-8">
             <div className="inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl mb-4">
@@ -209,134 +211,6 @@ function App() {
           )}
         </div>
 
-          {/* Статус разработки */}
-          <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Статус разработки</h2>
-              <p className="text-gray-600">Текущий прогресс проекта</p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
-              <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 hover:shadow-md transition-shadow">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
-                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                </div>
-                <h3 className="font-semibold text-green-900 mb-2">
-                  Этап 1: Инфраструктура
-                </h3>
-                <p className="text-green-700 text-sm mb-3">
-                  React + TypeScript, Tailwind CSS
-                </p>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                  Завершен
-                </span>
-              </div>
-
-              <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 hover:shadow-md transition-shadow">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
-                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                </div>
-                <h3 className="font-semibold text-green-900 mb-2">
-                  Этап 2: Выбор маркетплейса
-                </h3>
-                <p className="text-green-700 text-sm mb-3">
-                  Селектор, автозаполнение, валидация
-                </p>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                  Завершен
-                </span>
-              </div>
-
-              <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 hover:shadow-md transition-shadow">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
-                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                </div>
-                <h3 className="font-semibold text-green-900 mb-2">
-                  Этап 3: Модуль ввода данных
-                </h3>
-                <p className="text-green-700 text-sm mb-3">
-                  5 блоков ввода, валидация форм
-                </p>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                  Завершен
-                </span>
-              </div>
-
-              <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 hover:shadow-md transition-shadow">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
-                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                </div>
-                <h3 className="font-semibold text-green-900 mb-2">
-                  Этап 4: Движок расчетов
-                </h3>
-                <p className="text-green-700 text-sm mb-3">
-                  Формулы юнит-экономики, мгновенные расчеты
-                </p>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                  Завершен
-                </span>
-              </div>
-
-              <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 hover:shadow-md transition-shadow">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
-                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                </div>
-                <h3 className="font-semibold text-green-900 mb-2">
-                  Этап 5: Отображение результатов
-                </h3>
-                <p className="text-green-700 text-sm mb-3">
-                  Панель результатов, метрики, визуализация
-                </p>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                  Завершен
-                </span>
-              </div>
-
-              <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 hover:shadow-md transition-shadow">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
-                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                </div>
-                <h3 className="font-semibold text-green-900 mb-2">
-                  Этап 6: Управление сценариями
-                </h3>
-                <p className="text-green-700 text-sm mb-3">
-                  Сохранение, загрузка и управление сценариями
-                </p>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                  Завершен
-                </span>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -346,7 +220,7 @@ function App() {
         isOpen={isGlossaryOpen} 
         onClose={() => setIsGlossaryOpen(false)} 
       />
-    </div>
+    </Layout>
   );
 }
 
