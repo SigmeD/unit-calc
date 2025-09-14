@@ -47,8 +47,7 @@ export const useFormProgress = (input: CalculationInput): FormProgressResult => 
     let filledFields = 0;
 
     // Проверяем каждую секцию
-    Object.entries(FORM_SECTIONS).forEach(([sectionKey, section]) => {
-      let sectionComplete = true;
+    Object.entries(FORM_SECTIONS).forEach(([, section]) => {
       let sectionFilledFields = 0;
       
       section.fields.forEach(field => {
@@ -56,7 +55,7 @@ export const useFormProgress = (input: CalculationInput): FormProgressResult => 
         const value = input[field as keyof CalculationInput];
         
         // Проверяем заполненность поля
-        const isFilled = value !== undefined && value !== null && value !== '' && value !== 0;
+        const isFilled = value !== undefined && value !== null && value !== 0;
         
         if (isFilled) {
           filledFields++;
@@ -65,7 +64,7 @@ export const useFormProgress = (input: CalculationInput): FormProgressResult => 
         
         // Если поле обязательное и не заполнено, секция не готова
         if (section.required.includes(field) && !isFilled) {
-          sectionComplete = false;
+          // Секция не завершена
         }
       });
       
@@ -74,7 +73,7 @@ export const useFormProgress = (input: CalculationInput): FormProgressResult => 
       const sectionCompletionRate = sectionFilledFields / section.fields.length;
       const hasRequiredFields = section.required.every(field => {
         const value = input[field as keyof CalculationInput];
-        return value !== undefined && value !== null && value !== '' && value !== 0;
+        return value !== undefined && value !== null && value !== 0;
       });
       
       if (hasRequiredFields && sectionCompletionRate >= 0.5) {

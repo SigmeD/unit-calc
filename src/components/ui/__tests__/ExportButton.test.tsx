@@ -2,7 +2,6 @@
  * Unit тесты для компонента ExportButton
  */
 
-import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ExportButton } from '../ExportButton';
@@ -51,29 +50,43 @@ describe('ExportButton', () => {
     input: mockInput,
     results: {
       revenue: 1000,
-      totalCosts: 800,
-      profit: 200,
-      profitMargin: 20,
-      breakEvenPoint: 250,
-      unitEconomics: {
-        effectivePrice: 1800,
+      cm1: 400,
+      cm2: 200,
+      netProfit: 200,
+      marginPercent: 20,
+      roi: 25,
+      adRoi: 30,
+      acos: 15,
+      status: 'profit' as const,
+      breakEvenPrice: 250,
+      breakEvenVolume: 100,
+      effectivePrice: 1800,
+      effectivePickupRate: 70,
+      breakdown: {
         totalCOGS: 600,
-        variableCosts: 285,
-        fixedCostsPerUnit: 500,
-        contributionMargin: 915,
-        unitProfit: 200
-      },
-      costBreakdown: {
-        cogs: 600,
-        marketplaceFees: 150,
-        logistics: 100,
-        advertising: 150,
-        fixed: 500,
-        tax: 108,
-        other: 25
+        marketplaceFees: {
+          commission: 150,
+          logistics: 100,
+          storage: 50,
+          returns: 25,
+          total: 325
+        },
+        additionalCosts: {
+          advertising: 150,
+          otherVariable: 25,
+          fixedPerUnit: 500,
+          total: 675
+        },
+        taxes: {
+          amount: 108,
+          rate: 6,
+          base: 1800
+        },
+        totalCosts: 1708
       }
     },
-    createdAt: new Date().toISOString(),
+    createdAt: new Date(),
+    updatedAt: new Date(),
     marketplace: 'wildberries'
   };
 

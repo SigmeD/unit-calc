@@ -25,7 +25,7 @@ export const useCalculations = ({
   onCalculating,
   debounceMs = 300
 }: UseCalculationsOptions) => {
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<number | null>(null);
 
   // Мемоизируем валидацию входных данных
   const validationErrors = useMemo(() => {

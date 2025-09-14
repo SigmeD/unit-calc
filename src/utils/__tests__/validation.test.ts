@@ -86,18 +86,18 @@ describe('Validation Utils', () => {
 
   describe('validateSingleField', () => {
     it('should validate pickup rate in real time', () => {
-      const error = validateSingleField('pickupRate', 150, mockInput, mockMarketplace);
+      const error = validateSingleField('pickupRate', 150, mockInput);
       expect(error).toBeDefined();
     });
 
     it('should validate business logic for related fields', () => {
       const error = validateSingleField('returnRate', 40, 
-        { ...mockInput, pickupRate: 70 }, mockMarketplace);
+        { ...mockInput, pickupRate: 70 });
       expect(error).toBeDefined();
     });
 
     it('should pass valid single field validation', () => {
-      const error = validateSingleField('purchasePrice', 100, mockInput, mockMarketplace);
+      const error = validateSingleField('purchasePrice', 100, mockInput);
       expect(error).toBeNull();
     });
   });

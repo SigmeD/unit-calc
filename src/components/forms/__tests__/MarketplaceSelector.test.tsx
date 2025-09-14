@@ -1,9 +1,9 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import MarketplaceSelector from '../MarketplaceSelector';
-import type { Marketplace } from '../../../types';
+import type { SimpleMarketplace } from '../../../types';
 
-const mockMarketplaces: Marketplace[] = [
+const mockMarketplaces: SimpleMarketplace[] = [
   {
     id: 'wildberries',
     name: 'Wildberries',

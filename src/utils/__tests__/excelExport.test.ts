@@ -128,7 +128,7 @@ describe('excelExport', () => {
       exportToExcel(scenarioWithoutResults, 'wildberries');
       
       const calls = (XLSX.utils.book_append_sheet as any).mock.calls;
-      const resultsCalls = calls.filter(call => call[2] === 'Результаты');
+      const resultsCalls = calls.filter((call: any) => call[2] === 'Результаты');
       expect(resultsCalls).toHaveLength(0);
     });
 
@@ -147,7 +147,7 @@ describe('excelExport', () => {
       exportToExcel(mockScenario, 'wildberries', options);
       
       const calls = (XLSX.utils.book_append_sheet as any).mock.calls;
-      const formulasCalls = calls.filter(call => call[2] === 'Формулы');
+      const formulasCalls = calls.filter((call: any) => call[2] === 'Формулы');
       expect(formulasCalls).toHaveLength(0);
     });
 
@@ -166,7 +166,7 @@ describe('excelExport', () => {
       exportToExcel(mockScenario, 'wildberries', options);
       
       const calls = (XLSX.utils.book_append_sheet as any).mock.calls;
-      const breakdownCalls = calls.filter(call => call[2] === 'Расходы');
+      const breakdownCalls = calls.filter((call: any) => call[2] === 'Расходы');
       expect(breakdownCalls).toHaveLength(0);
     });
 
@@ -185,7 +185,7 @@ describe('excelExport', () => {
       exportToExcel(mockScenario, 'wildberries', options);
       
       const calls = (XLSX.utils.book_append_sheet as any).mock.calls;
-      const metadataCalls = calls.filter(call => call[2] === 'Информация');
+      const metadataCalls = calls.filter((call: any) => call[2] === 'Информация');
       expect(metadataCalls).toHaveLength(0);
     });
 
@@ -268,7 +268,7 @@ describe('excelExport', () => {
       exportAllScenarios(manyScenarios, 'wildberries');
       
       const calls = (XLSX.utils.book_append_sheet as any).mock.calls;
-      const scenarioCalls = calls.filter(call => call[2].startsWith('Сценарий'));
+      const scenarioCalls = calls.filter((call: any) => call[2].startsWith('Сценарий'));
       expect(scenarioCalls).toHaveLength(5);
     });
 
@@ -289,7 +289,7 @@ describe('excelExport', () => {
       exportAllScenarios(scenariosWithoutResults, 'wildberries');
       
       const calls = (XLSX.utils.book_append_sheet as any).mock.calls;
-      const scenarioCalls = calls.filter(call => call[2].startsWith('Сценарий'));
+      const scenarioCalls = calls.filter((call: any) => call[2].startsWith('Сценарий'));
       expect(scenarioCalls).toHaveLength(1); // Только один сценарий с результатами
     });
   });
@@ -348,7 +348,7 @@ describe('excelExport', () => {
       
       // Ищем данные листа результатов (второй вызов aoa_to_sheet)
       const calls = (XLSX.utils.aoa_to_sheet as any).mock.calls;
-      const resultsCall = calls.find((call, index) => {
+      const resultsCall = calls.find((_: any, index: number) => {
         // Лист результатов - второй по счету
         return index === 1;
       });
@@ -412,9 +412,9 @@ describe('excelExport', () => {
 
     it('должен правильно форматировать налоговые режимы', () => {
       const scenarios = [
-        { ...mockScenario, input: { ...mockInput, taxRegime: 'USN_6' } },
-        { ...mockScenario, input: { ...mockInput, taxRegime: 'USN_15' } },
-        { ...mockScenario, input: { ...mockInput, taxRegime: 'OSNO' } }
+        { ...mockScenario, input: { ...mockInput, taxRegime: 'USN_6' as const } },
+        { ...mockScenario, input: { ...mockInput, taxRegime: 'USN_15' as const } },
+        { ...mockScenario, input: { ...mockInput, taxRegime: 'OSNO' as const } }
       ];
       
       scenarios.forEach(scenario => {
@@ -450,7 +450,7 @@ describe('excelExport', () => {
         
         // Ищем данные листа результатов
         const calls = (XLSX.utils.aoa_to_sheet as any).mock.calls;
-        const resultsCall = calls.find((call, callIndex) => callIndex === 1);
+        const resultsCall = calls.find((_: any, callIndex: number) => callIndex === 1);
         
         if (resultsCall) {
           const data = resultsCall[0];

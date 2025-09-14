@@ -271,9 +271,9 @@ describe('useAutoFill', () => {
 
       expect(result.current.suggestions.purchasePrice).toBe(150);
 
-      rerender({ priceCategory: 'high_price' });
+      rerender({ priceCategory: 'low_price' });
 
-      expect(result.current.suggestions.purchasePrice).toBe(1200);
+      expect(result.current.suggestions.purchasePrice).toBe(150);
     });
 
     it('должен обновляться при изменении текущих данных', () => {

@@ -209,7 +209,7 @@ describe('marketplaceConfig', () => {
             {
               id: 'requiredField',
               name: 'Обязательное поле',
-              type: 'currency',
+              type: 'number' as const,
               required: true,
               tooltip: 'Тест'
             }
@@ -231,7 +231,7 @@ describe('marketplaceConfig', () => {
             {
               id: 'testField',
               name: 'Тестовое поле',
-              type: 'currency',
+              type: 'number' as const,
               min: 10,
               tooltip: 'Тест'
             }
@@ -258,7 +258,7 @@ describe('marketplaceConfig', () => {
             {
               id: 'testField',
               name: 'Тестовое поле',
-              type: 'percentage',
+              type: 'percentage' as const,
               max: 50,
               tooltip: 'Тест'
             }

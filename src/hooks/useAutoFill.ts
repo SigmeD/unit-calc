@@ -157,7 +157,7 @@ export const useAutoFill = ({
     const suggestions: Partial<CalculationInput> = {
       ...categoryDefaults,
       // Сохраняем некоторые поля, которые пользователь уже мог заполнить
-      commission: currentInput.commission || categoryDefaults.commission,
+      commission: currentInput.commission || (marketplace === 'wildberries' ? 17 : 15),
       pickupRate: currentInput.pickupRate || (marketplace === 'wildberries' ? 70 : 65),
       returnRate: currentInput.returnRate || (marketplace === 'wildberries' ? 15 : 20),
       taxRegime: currentInput.taxRegime || 'USN_6'
@@ -168,7 +168,8 @@ export const useAutoFill = ({
     };
 
     const getSuggestionForField = (field: keyof CalculationInput): number | string | undefined => {
-      return suggestions[field];
+      const value = suggestions[field];
+      return typeof value === 'object' ? undefined : value;
     };
 
     return {

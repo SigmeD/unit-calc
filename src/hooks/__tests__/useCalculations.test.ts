@@ -104,7 +104,7 @@ describe('useCalculations', () => {
     });
 
     it('должен выполнять автоматический расчет при изменении входных данных', async () => {
-      const { rerender } = renderHook(
+      const { } = renderHook(
         ({ input }) => useCalculations({
           input,
           onResults: mockOnResults,
@@ -190,7 +190,7 @@ describe('useCalculations', () => {
         throw error;
       });
 
-      const { result } = renderHook(() => useCalculations({
+      const { } = renderHook(() => useCalculations({
         input: mockInput,
         onResults: mockOnResults,
         onErrors: mockOnErrors,

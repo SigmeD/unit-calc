@@ -5,7 +5,7 @@
 import { renderHook } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useExport } from '../useExport';
-import type { Scenario, CalculationResults, CalculationInput, MarketplaceId } from '../../types';
+import type { Scenario, CalculationResults, CalculationInput } from '../../types';
 
 // Мокаем модуль экспорта
 vi.mock('../../utils/excelExport', () => ({
@@ -89,7 +89,7 @@ describe('useExport', () => {
 
   const mockScenarioWithoutResults: Scenario = {
     ...mockScenario,
-    results: null
+    results: undefined
   };
 
   beforeEach(() => {

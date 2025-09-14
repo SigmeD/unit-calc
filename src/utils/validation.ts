@@ -42,7 +42,7 @@ export const validateField = (value: string | number | undefined | null, rules: 
 /**
  * Схема валидации для основных полей калькулятора
  */
-export const getValidationSchema = (marketplace?: Marketplace): ValidationSchema => {
+export const getValidationSchema = (_marketplace?: Marketplace): ValidationSchema => {
   return {
     // Блок 1: Себестоимость
     purchasePrice: [

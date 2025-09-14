@@ -2,7 +2,6 @@
  * Unit тесты для компонента LoadingSpinner
  */
 
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import LoadingSpinner from '../LoadingSpinner';

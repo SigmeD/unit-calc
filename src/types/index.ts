@@ -39,6 +39,18 @@ export interface Marketplace {
   defaultValues: Partial<CalculationInput>;
 }
 
+export interface SimpleMarketplace {
+  id: MarketplaceId;
+  name: string;
+  config: MarketplaceConfig;
+  defaultValues: {
+    commission: number;
+    logistics: number;
+    pickupRate: number;
+    returnRate: number;
+  };
+}
+
 // Входные данные для расчетов
 export interface CalculationInput {
   // Блок 1: Себестоимость (COGS)

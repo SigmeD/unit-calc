@@ -39,7 +39,7 @@ const AutoFillHelper: React.FC<AutoFillHelperProps> = ({
     Object.entries(values).forEach(([key, value]) => {
       const currentValue = currentInput[key as keyof CalculationInput];
       // Применяем значение только если поле пустое или равно 0
-      if (currentValue === 0 || currentValue === '' || currentValue === undefined || currentValue === null) {
+      if (currentValue === 0 || currentValue === undefined || currentValue === null) {
         filteredValues[key as keyof CalculationInput] = value as any;
       }
     });

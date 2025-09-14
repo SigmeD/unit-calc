@@ -188,11 +188,11 @@ export const validateMarketplaceValues = (
       errors[field.id] = `Поле "${field.name}" обязательно для заполнения`;
     }
 
-    if (field.min !== undefined && value < field.min) {
+    if (field.min !== undefined && typeof value === 'number' && value < field.min) {
       errors[field.id] = `Значение должно быть не менее ${field.min}`;
     }
 
-    if (field.max !== undefined && value > field.max) {
+    if (field.max !== undefined && typeof value === 'number' && value > field.max) {
       errors[field.id] = `Значение должно быть не более ${field.max}`;
     }
   });

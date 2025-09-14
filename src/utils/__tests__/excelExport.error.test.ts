@@ -236,8 +236,8 @@ describe('Обработка ошибок при экспорте Excel', () => 
 
       // Проверяем что листы результатов не создались
       const calls = (XLSX.utils.book_append_sheet as any).mock.calls;
-      const resultsCalls = calls.filter(call => call[2] === 'Результаты');
-      const breakdownCalls = calls.filter(call => call[2] === 'Расходы');
+      const resultsCalls = calls.filter((call: any) => call[2] === 'Результаты');
+      const breakdownCalls = calls.filter((call: any) => call[2] === 'Расходы');
       
       expect(resultsCalls).toHaveLength(0);
       expect(breakdownCalls).toHaveLength(0);
@@ -343,7 +343,7 @@ describe('Обработка ошибок при экспорте Excel', () => 
 
       // Проверяем что создался только один детальный лист
       const calls = (XLSX.utils.book_append_sheet as any).mock.calls;
-      const scenarioCalls = calls.filter(call => call[2].startsWith('Сценарий'));
+      const scenarioCalls = calls.filter((call: any) => call[2].startsWith('Сценарий'));
       expect(scenarioCalls).toHaveLength(1);
     });
 
