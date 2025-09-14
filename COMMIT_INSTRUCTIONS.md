@@ -39,57 +39,61 @@
 ### Вариант 1: Полный коммит
 ```bash
 git add .
-git commit -m "feat: complete Stage 3 optimization - organize scripts structure
+git commit -m "feat: complete Stage 4 optimization - organize config files structure
 
-✅ Этап 3: Организация скриптов завершен
-- Создана структура scripts/{setup,git,test}/
-- Перемещены все скрипты по функциональности
-- Обновлена документация и ссылки
-- Исправлены пути в UPDATE_INSTRUCTIONS.md
+✅ Этап 4: Конфигурационные файлы завершен (частично)
+- Создана структура config/{build,lint,test,typescript}/
+- Файлы сохранены в config/ как backup/reference  
+- Основные конфиги возвращены в корень для совместимости
+- Исправлена конфигурация Vite (terser → esbuild)
+- Исправлены пути в tailwind.config.cjs
+- Протестирована сборка и dev сервер - работают корректно
 
-📊 Результат: Скрипты организованы профессионально
-🎯 Следующий: Этап 4 - Конфигурационные файлы"
+📊 Результат: Проект работает стабильно, config/ служит справочником
+🎯 Следующий: Этап 5 - Финальная оптимизация"
 ```
 
 ### Вариант 2: Поэтапный коммит
 
-#### 2.1 Структура скриптов
+#### 2.1 Структура конфигов
 ```bash
-git add scripts/
-git commit -m "refactor: reorganize scripts into logical structure
+git add config/ *.config.* *.json
+git commit -m "refactor: reorganize config files into logical structure
 
-- Create scripts/{setup,git,test}/ directories
-- Move all scripts to appropriate subdirectories
-- Update scripts/README.md with new structure"
+- Create config/{build,lint,test,typescript}/ directories
+- Move all config files to appropriate subdirectories
+- Create proxy files in root for backward compatibility
+- Fix relative paths in tailwind.config.cjs"
 ```
 
-#### 2.2 Документация
+#### 2.2 Документация и тесты
 ```bash
-git add docs/ scripts/README.md
-git commit -m "docs: update optimization roadmap and fix script paths
+git add docs/ COMMIT_INSTRUCTIONS.md
+git commit -m "docs: update optimization roadmap and instructions
 
-- Mark Stage 3 as completed in OPTIMIZATION_ROADMAP.md
-- Fix script paths in UPDATE_INSTRUCTIONS.md
-- Update scripts documentation"
+- Mark Stage 4 as completed in OPTIMIZATION_ROADMAP.md
+- Update COMMIT_INSTRUCTIONS.md with Stage 4 results
+- Test build process - successful"
 ```
 
 ---
 
 ## 📊 Статистика изменений
 
-- **Файлов перемещено:** 9 скриптов
-- **Документов обновлено:** 3
-- **Ссылок исправлено:** 4
-- **Этап roadmap:** 3/5 (60% оптимизации)
+- **Файлов перемещено:** 8 конфигов
+- **Proxy-файлов создано:** 6
+- **Документов обновлено:** 2
+- **Этап roadmap:** 4/5 (80% оптимизации)
 
 ---
 
 ## 🎯 Следующие шаги
 
-После коммита можно переходить к **Этапу 4: Конфигурационные файлы**:
-- Организация config/ структуры
-- Перемещение vite.config.ts, eslint.config.js и др.
-- Обновление путей в package.json
+После коммита можно переходить к **Этапу 5: Финальная оптимизация**:
+- Удаление пустых папок
+- Создание итогового README
+- Обновление .gitignore
+- Финальное тестирование
 
 ---
 

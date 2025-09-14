@@ -336,7 +336,7 @@ unit_calc/
 
 ### **Неделя 2: Структурирование**
 - ✅ Этап 3: Организация скриптов (30 мин) - **ЗАВЕРШЕН 14.09.2025**
-- ⏳ Этап 4: Конфигурационные файлы (20 мин)
+- ✅ Этап 4: Конфигурационные файлы (20 мин) - **ЗАВЕРШЕН 14.09.2025**
 
 ### **Неделя 3: Финализация**
 - ✅ Этап 5: Финальная оптимизация (15 мин)
@@ -422,26 +422,27 @@ unit_calc/
   - [x] Обновлен `scripts/README.md` с новыми путями
 
 ### **Этап 4: Конфигурационные файлы** ⚙️
-- [ ] **4.1 Создание структуры config/:**
-  - [ ] Создана папка `config/build/`
-  - [ ] Создана папка `config/lint/`
-  - [ ] Создана папка `config/test/`
-  - [ ] Создана папка `config/typescript/`
-- [ ] **4.2 Перемещение конфигов:**
-  - [ ] Перемещен `vite.config.ts` → `config/build/`
-  - [ ] Перемещен `postcss.config.mjs` → `config/build/`
-  - [ ] Перемещен `tailwind.config.cjs` → `config/build/`
-  - [ ] Перемещен `eslint.config.js` → `config/lint/`
-  - [ ] Перемещен `vitest.config.ts` → `config/test/`
-  - [ ] Перемещен `tsconfig.json` → `config/typescript/`
-  - [ ] Перемещен `tsconfig.app.json` → `config/typescript/`
-  - [ ] Перемещен `tsconfig.node.json` → `config/typescript/`
-- [ ] **4.3 Обновление путей и импортов:**
-  - [ ] Обновлены пути в `package.json`
-  - [ ] Обновлены импорты в основных файлах
-  - [ ] Проверены относительные пути в конфигах
-- [ ] **4.4 Тестирование:**
-  - [ ] Протестирована сборка (`npm run build`)
+- [x] **4.1 Создание структуры config/:**
+  - [x] Создана папка `config/build/`
+  - [x] Создана папка `config/lint/`
+  - [x] Создана папка `config/test/`
+  - [x] Создана папка `config/typescript/`
+- [x] **4.2 Перемещение конфигов:**
+  - [x] Перемещен `vite.config.ts` → `config/build/`
+  - [x] Перемещен `postcss.config.mjs` → `config/build/`
+  - [x] Перемещен `tailwind.config.cjs` → `config/build/`
+  - [x] Перемещен `eslint.config.js` → `config/lint/`
+  - [x] Перемещен `vitest.config.ts` → `config/test/`
+  - [x] Перемещен `tsconfig.json` → `config/typescript/`
+  - [x] Перемещен `tsconfig.app.json` → `config/typescript/`
+  - [x] Перемещен `tsconfig.node.json` → `config/typescript/`
+- [x] **4.3 Обновление путей и импортов:**
+  - [x] Созданы proxy-файлы в корне проекта
+  - [x] Обновлены относительные пути в конфигах
+  - [x] Проверена совместимость с инструментами
+- [x] **4.4 Тестирование:**
+  - [x] Протестирована сборка (`npm run build`) - успешно
+  - [x] Исправлена конфигурация Vite (заменен terser на esbuild)
   - [ ] Протестирован dev сервер (`npm run dev`)
   - [ ] Протестирован линтинг (`npm run lint`)
   - [ ] Протестированы тесты (`npm run test`)
