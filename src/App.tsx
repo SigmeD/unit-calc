@@ -125,92 +125,130 @@ function App() {
   
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 py-4 md:py-8">
-        <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
-          <div className="space-y-4 md:space-y-8">
-          {/* Заголовок */}
-        <div className="text-center mb-6 md:mb-8">
-            <div className="inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl mb-4">
-              <svg className="w-6 h-6 md:w-8 md:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <h1 className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-3">
-              Калькулятор юнит-экономики
-            </h1>
-            <p className="text-base md:text-xl text-gray-600 max-w-2xl mx-auto px-4 mb-4">
-              Рассчитайте прибыльность товаров на Wildberries и Ozon с учетом всех комиссий и скрытых расходов
-            </p>
-            
-            {/* Кнопка глоссария */}
-            <div className="flex justify-center">
-              <Button 
-                variant="outline" 
-                onClick={() => setIsGlossaryOpen(true)}
-                className="flex items-center space-x-2 text-blue-600 border-blue-300 hover:bg-blue-50"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
-                <span>📚 Глоссарий терминов</span>
-              </Button>
-            </div>
-          </div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 relative overflow-hidden">
+        {/* Декоративные элементы фона */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {/* Круги */}
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/10 to-indigo-400/10 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 -left-32 w-64 h-64 bg-gradient-to-br from-purple-400/10 to-pink-400/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gradient-to-br from-cyan-400/10 to-blue-400/10 rounded-full blur-3xl"></div>
+          
+          {/* Сетка */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.03)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
+        </div>
+        
+        <div className="relative z-10 py-6 md:py-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="space-y-6 md:space-y-10">
+              {/* Заголовок */}
+              <div className="text-center mb-8 md:mb-12">
+                {/* Иконка с анимацией */}
+                <div className="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 via-purple-500 to-indigo-600 rounded-3xl mb-6 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-300 hover:scale-105">
+                  <svg className="w-8 h-8 md:w-10 md:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                
+                {/* Заголовок с улучшенной типографикой */}
+                <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent mb-4 leading-tight">
+                  Калькулятор юнит-экономики
+                </h1>
+                
+                {/* Подзаголовок */}
+                <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto px-4 mb-6 leading-relaxed">
+                  Рассчитайте прибыльность товаров на <span className="font-semibold text-blue-600">Wildberries</span> и <span className="font-semibold text-orange-600">Ozon</span> с учетом всех комиссий и скрытых расходов
+                </p>
+                
+                {/* Статистика */}
+                <div className="flex flex-wrap justify-center gap-6 mb-8">
+                  <div className="flex items-center space-x-2 text-sm text-slate-500">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span>100% точность расчетов</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm text-slate-500">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <span>2 маркетплейса</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm text-slate-500">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                    <span>Бесплатно</span>
+                  </div>
+                </div>
+                
+                {/* Кнопка глоссария с улучшенным дизайном */}
+                <div className="flex justify-center">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setIsGlossaryOpen(true)}
+                    className="group flex items-center space-x-3 px-6 py-3 text-blue-600 border-blue-200 hover:border-blue-300 hover:bg-blue-50/50 transition-all duration-200 hover:shadow-md rounded-xl"
+                  >
+                    <svg className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                    <span className="font-medium">📚 Глоссарий терминов</span>
+                  </Button>
+                </div>
+              </div>
 
-        {/* Селектор маркетплейса */}
-        <MarketplaceSelector
-          marketplaces={mockMarketplaces}
-          selectedMarketplace={selectedMarketplace}
-          onMarketplaceChange={handleMarketplaceChange}
-          errors={errors}
-        />
-
-        {/* Управление сценариями */}
-        {selectedMarketplace && (
-          <ScenarioManager
-            scenarios={scenarios}
-            currentScenarioId={currentScenario}
-            marketplace={selectedMarketplace}
-            currentInput={input}
-            currentResults={results}
-            onScenarioLoad={loadScenario}
-            onScenarioSave={saveScenario}
-            onScenarioDelete={deleteScenario}
-            onNewScenario={newScenario}
-          />
-        )}
-
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-8">
-          {/* Форма ввода данных */}
-          {selectedMarketplace && (
-            <div className="order-2 xl:order-1">
-              <DataInputForm
-                marketplace={selectedMarketplace}
-                values={input}
-                onChange={handleInputChange}
-                onBulkChange={handleBulkChange}
+              {/* Селектор маркетплейса */}
+              <MarketplaceSelector
+                marketplaces={mockMarketplaces}
+                selectedMarketplace={selectedMarketplace}
+                onMarketplaceChange={handleMarketplaceChange}
                 errors={errors}
               />
-            </div>
-          )}
 
-          {/* Результаты расчетов - липкий блок на десктопе */}
-          {selectedMarketplace && (
-            <div className="order-1 xl:order-2">
-              <div className="xl:sticky xl:top-8 xl:max-h-[calc(100vh-4rem)] xl:overflow-y-auto sticky-results sticky-scroll xl:shadow-lg xl:rounded-xl">
-                <ResultsPanel
-                  marketplace={currentMarketplace || null}
-                  results={results}
-                  isCalculating={isCalculating}
-                  onExport={() => console.log('Экспорт в Excel')}
-                  onSave={() => console.log('Сохранить сценарий')}
-                  onReset={() => console.log('Сбросить данные')}
+              {/* Управление сценариями */}
+              {selectedMarketplace && (
+                <ScenarioManager
+                  scenarios={scenarios}
+                  currentScenarioId={currentScenario}
+                  marketplace={selectedMarketplace}
+                  currentInput={input}
+                  currentResults={results}
+                  onScenarioLoad={loadScenario}
+                  onScenarioSave={saveScenario}
+                  onScenarioDelete={deleteScenario}
+                  onNewScenario={newScenario}
                 />
+              )}
+
+              {/* Основной контент с улучшенной компоновкой */}
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8 lg:gap-10">
+                {/* Форма ввода данных */}
+                {selectedMarketplace && (
+                  <div className="order-2 xl:order-1">
+                    <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl shadow-slate-200/50 border border-white/20 p-6 md:p-8">
+                      <DataInputForm
+                        marketplace={selectedMarketplace}
+                        values={input}
+                        onChange={handleInputChange}
+                        onBulkChange={handleBulkChange}
+                        errors={errors}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Результаты расчетов - липкий блок на десктопе */}
+                {selectedMarketplace && (
+                  <div className="order-1 xl:order-2">
+                    <div className="xl:sticky xl:top-8 xl:max-h-[calc(100vh-4rem)] xl:overflow-y-auto">
+                      <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl shadow-slate-200/50 border border-white/20 overflow-hidden">
+                        <ResultsPanel
+                          marketplace={currentMarketplace || null}
+                          results={results}
+                          isCalculating={isCalculating}
+                          onExport={() => console.log('Экспорт в Excel')}
+                          onSave={() => console.log('Сохранить сценарий')}
+                          onReset={() => console.log('Сбросить данные')}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
-          )}
-        </div>
-
           </div>
         </div>
       </div>
