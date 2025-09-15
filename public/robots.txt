@@ -1,8 +1,8 @@
 User-agent: *
-Allow: /
+Disallow: /
 
-# Разрешаем индексацию всех страниц
-Allow: /
+# Запрещаем индексацию всех страниц
+Disallow: /
 
 # Запрещаем индексацию тестовых файлов
 Disallow: /test/
@@ -26,5 +26,6 @@ Crawl-delay: 1
 
 # Sitemap (будет добавлен при необходимости)
 # Sitemap: https://your-domain.com/sitemap.xml
+
 
 
